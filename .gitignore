@@ -1,0 +1,12 @@
+node_modules
+
+# build artifacts
+dist
+.webpack
+.serverless
+
+# vscode history
+.history
+
+# env
+.env*

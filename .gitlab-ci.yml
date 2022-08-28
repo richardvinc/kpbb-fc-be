@@ -1,0 +1,326 @@
+stages:
+  - pre
+  - build
+  - deploy
+
+cache: &global_cache
+  key: "$CI_COMMIT_REF_SLUG"
+  paths:
+    - .yarn/
+    - node_modules/
+    - libs/*/node_modules/
+    - apps/*/node_modules/
+  policy: pull
+
+.serverless:deploy: &serverless_deploy
+  image: node:14.17
+  stage: deploy
+  before_script:
+    - npm i -g serverless@2.35.0
+    - |
+      serverless config credentials \
+      --provider aws \
+      --key $AWS_ACCESS_KEY_ID \
+      --secret $AWS_SECRET_ACCESS_KEY \
+      --profile $SLS_PROFILE_NAME
+    - du -sh node_modules/
+    - echo $YARN_CACHE_FOLDER
+    - yarn install --frozen-lockfile --ignore-scripts --silent --cache-folder .yarn
+  needs:
+    - job: install
+      optional: true
+
+install:
+  image: node:14.17
+  stage: pre
+  script:
+    - yarn install --frozen-lockfile --ignore-scripts --silent --cache-folder .yarn
+  cache:
+    <<: *global_cache
+    policy: pull-push
+  rules:
+    - changes:
+        - package.json
+        - yarn.lock
+        - libs/**/package.json
+        - apps/**/package.json
+
+build:api:dev:
+  image: node:14.17
+  stage: build
+  environment:
+    name: development
+    action: prepare
+  before_script:
+    - apt-get update && apt-get install -y zip
+    - yarn install --frozen-lockfile --ignore-scripts --silent --cache-folder .yarn
+  script:
+    - export DATE=$(date '+%Y%m%d%H%M%S')
+    - export VERSION=$EB_API_ENV_NAME-$DATE-$CI_PIPELINE_ID
+    - echo $DATE
+    - echo $VERSION
+    - cd apps/api
+    - yarn run build
+    - zip -q -r ./$VERSION.zip dist package.json Procfile
+    - echo "VERSION=$VERSION" >> variable.json
+  artifacts:
+    paths:
+      - ./apps/api/*.zip
+      - ./apps/api/variable.json
+    expire_in: 1 day
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "development"'
+      changes:
+        - apps/migrations/*
+        - apps/seeds/*
+        - apps/api/**/*
+        - libs/**/*
+  needs:
+    - job: install
+      optional: true
+
+deploy:api:dev:
+  image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+  stage: deploy
+  environment:
+    name: development
+  variables:
+    APP_NAME: $EB_API_APP_NAME
+    ENV_NAME: $EB_API_ENV_NAME
+    S3_BUCKET_NAME: elasticbeanstalk-$AWS_DEFAULT_REGION-$AWS_ACCOUNT_ID
+  script:
+    - cd apps/api
+    - export VERSION=$(cat ./variable.json | grep VERSION | cut -d = -f2)
+    - echo $VERSION
+    - echo $APP_NAME
+    - echo $ENV_NAME
+    - echo $S3_BUCKET_NAME
+    # upload zip file to beanstalk bucket
+    - aws s3 cp ./$VERSION.zip s3://$S3_BUCKET_NAME/$APP_NAME/
+    # create a new beanstalk version
+    - |
+      aws elasticbeanstalk create-application-version \
+      --application-name $APP_NAME \
+      --version-label $VERSION \
+      --source-bundle S3Bucket="$S3_BUCKET_NAME",S3Key="$APP_NAME/$VERSION.zip" \
+      --auto-create-application
+    # deploy the new version to the environment
+    - |
+      aws elasticbeanstalk update-environment \
+      --application-name $APP_NAME \
+      --environment-name $ENV_NAME \
+      --version-label $VERSION
+  cache: [] # disable cache - https://docs.gitlab.com/ee/ci/caching/#disable-cache-for-specific-jobs
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "development"'
+      changes:
+        - apps/api/**/*
+        - libs/**/*
+  needs: ["build:api:dev"]
+
+build:api:qa:
+  image: node:14.17
+  stage: build
+  environment:
+    name: qa
+    action: prepare
+  before_script:
+    - apt-get update && apt-get install -y zip
+    - yarn install --frozen-lockfile --ignore-scripts --silent --cache-folder .yarn
+  script:
+    - export DATE=$(date '+%Y%m%d%H%M%S')
+    - export VERSION=$EB_API_ENV_NAME-$DATE-$CI_PIPELINE_ID
+    - echo $DATE
+    - echo $VERSION
+    # migrate database
+    - npm install -g knex@1.0.4 dotenv
+    - echo PG_DATABASE_URL=$PG_DATABASE_URL >> .env
+    - knex migrate:latest --knexfile knexfile.ts
+    - cd apps/api
+    - yarn run build
+    - zip -q -r ./$VERSION.zip dist package.json Procfile
+    - echo "VERSION=$VERSION" >> variable.json
+  artifacts:
+    paths:
+      - ./apps/api/*.zip
+      - ./apps/api/variable.json
+    expire_in: 1 day
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "qa"'
+      changes:
+        - apps/migrations/*
+        - apps/seeds/*
+        - apps/api/**/*
+        - libs/**/*
+  needs:
+    - job: install
+      optional: true
+
+deploy:api:qa:
+  image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+  stage: deploy
+  environment:
+    name: qa
+  variables:
+    APP_NAME: $EB_API_APP_NAME
+    ENV_NAME: $EB_API_ENV_NAME
+    S3_BUCKET_NAME: elasticbeanstalk-$AWS_DEFAULT_REGION-$AWS_ACCOUNT_ID
+  script:
+    - cd apps/api
+    - export VERSION=$(cat ./variable.json | grep VERSION | cut -d = -f2)
+    - echo $VERSION
+    - echo $APP_NAME
+    - echo $ENV_NAME
+    - echo $S3_BUCKET_NAME
+    # upload zip file to beanstalk bucket
+    - aws s3 cp ./$VERSION.zip s3://$S3_BUCKET_NAME/$APP_NAME/
+    # create a new beanstalk version
+    - |
+      aws elasticbeanstalk create-application-version \
+      --application-name $APP_NAME \
+      --version-label $VERSION \
+      --source-bundle S3Bucket="$S3_BUCKET_NAME",S3Key="$APP_NAME/$VERSION.zip" \
+      --auto-create-application
+    # deploy the new version to the environment
+    - |
+      aws elasticbeanstalk update-environment \
+      --application-name $APP_NAME \
+      --environment-name $ENV_NAME \
+      --version-label $VERSION
+  cache: [] # disable cache - https://docs.gitlab.com/ee/ci/caching/#disable-cache-for-specific-jobs
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "qa"'
+      changes:
+        - apps/api/**/*
+        - libs/**/*
+  needs: ["build:api:qa"]
+
+build:api:prod:
+  image: node:14.17
+  stage: build
+  environment:
+    name: prod
+    action: prepare
+  before_script:
+    - apt-get update && apt-get install -y zip
+    - yarn install --frozen-lockfile --ignore-scripts --silent --cache-folder .yarn
+  script:
+    - export DATE=$(date '+%Y%m%d%H%M%S')
+    - export VERSION=$EB_API_ENV_NAME-$DATE-$CI_PIPELINE_ID
+    - echo $DATE
+    - echo $VERSION
+    # migrate database
+    - npm install -g knex@1.0.4 dotenv
+    - echo PG_DATABASE_URL=$PG_DATABASE_URL >> .env
+    - knex migrate:latest --knexfile knexfile.ts
+    - cd apps/api
+    - yarn run build
+    - zip -q -r ./$VERSION.zip dist package.json Procfile
+    - echo "VERSION=$VERSION" >> variable.json
+  artifacts:
+    paths:
+      - ./apps/api/*.zip
+      - ./apps/api/variable.json
+    expire_in: 1 day
+  rules:
+    - if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"
+      changes:
+        - apps/migrations/*
+        - apps/seeds/*
+        - apps/api/**/*
+        - libs/**/*
+  needs:
+    - job: install
+      optional: true
+
+deploy:api:prod:
+  image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+  stage: deploy
+  environment:
+    name: prod
+  variables:
+    APP_NAME: $EB_API_APP_NAME
+    ENV_NAME: $EB_API_ENV_NAME
+    S3_BUCKET_NAME: elasticbeanstalk-$AWS_DEFAULT_REGION-$AWS_ACCOUNT_ID
+  script:
+    - cd apps/api
+    - export VERSION=$(cat ./variable.json | grep VERSION | cut -d = -f2)
+    - echo $VERSION
+    - echo $APP_NAME
+    - echo $ENV_NAME
+    - echo $S3_BUCKET_NAME
+    # upload zip file to beanstalk bucket
+    - aws s3 cp ./$VERSION.zip s3://$S3_BUCKET_NAME/$APP_NAME/
+    # create a new beanstalk version
+    - |
+      aws elasticbeanstalk create-application-version \
+      --application-name $APP_NAME \
+      --version-label $VERSION \
+      --source-bundle S3Bucket="$S3_BUCKET_NAME",S3Key="$APP_NAME/$VERSION.zip" \
+      --auto-create-application
+    # deploy the new version to the environment
+    - |
+      aws elasticbeanstalk update-environment \
+      --application-name $APP_NAME \
+      --environment-name $ENV_NAME \
+      --version-label $VERSION
+  cache: [] # disable cache - https://docs.gitlab.com/ee/ci/caching/#disable-cache-for-specific-jobs
+  rules:
+    - if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"
+      changes:
+        - apps/api/**/*
+        - libs/**/*
+  needs: ["build:api:prod"]
+
+#region "resources"
+deploy:resources:dev:
+  <<: *serverless_deploy
+  environment:
+    name: development/resources
+  variables:
+    STAGE: dev
+  script:
+    - cd apps/resources
+    - yarn deploy:dev
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "development"'
+      changes:
+        - apps/resources/**/*
+  needs:
+    - job: install
+      optional: true
+
+deploy:resources:qa:
+  <<: *serverless_deploy
+  environment:
+    name: qa/resources
+  variables:
+    STAGE: qa
+  script:
+    - cd apps/resources
+    - yarn deploy:qa
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "qa"'
+      changes:
+        - apps/resources/**/*
+  needs:
+    - job: install
+      optional: true
+
+deploy:resources:prod:
+  <<: *serverless_deploy
+  environment:
+    name: production/resources
+  variables:
+    STAGE: prod
+  script:
+    - cd apps/resources
+    - yarn deploy:prod
+  rules:
+    - if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"
+      changes:
+        - apps/resources/**/*
+  needs:
+    - job: install
+      optional: true
+#endregion

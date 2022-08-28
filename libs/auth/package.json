@@ -1,0 +1,13 @@
+{
+  "name": "@kopeka/auth",
+  "version": "0.0.1",
+  "license": "UNLICENSED",
+  "main": "index.ts",
+  "scripts": {},
+  "dependencies": {
+    "firebase-admin": "9.10.0"
+  },
+  "devDependencies": {
+    "typescript": "4.2.3"
+  }
+}

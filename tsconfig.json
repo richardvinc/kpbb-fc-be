@@ -1,0 +1,27 @@
+{
+  "extends": "./tsconfig.build.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@kopeka/auth": ["libs/auth/src"],
+      "@kopeka/core": ["libs/core/src"],
+      "@kopeka/db": ["libs/db/src"],
+      "@kopeka/types": ["libs/types/src"],
+      "@kopeka/user": ["libs/user/src"],
+
+      "@kopeka/auth/*": ["libs/auth/src/*"],
+      "@kopeka/core/*": ["libs/core/src/*"],
+      "@kopeka/db/*": ["libs/db/src/*"],
+      "@kopeka/types/*": ["libs/types/src/*"],
+      "@kopeka/user/*": ["libs/user/src/*"]
+    },
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "strict": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "typeRoots": ["@types", "./node_modules/@types"]
+  }
+}

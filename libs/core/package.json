@@ -1,0 +1,43 @@
+{
+  "name": "@kopeka/core",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=14"
+  },
+  "author": "Koalisi Pejalan Kaki",
+  "license": "UNLICENSED",
+  "scripts": {},
+  "devDependencies": {
+    "@types/cls-hooked": "4.3.3",
+    "@types/dotenv": "8.2.0",
+    "@types/koa": "2.13.4",
+    "@types/mime-types": "2.1.1",
+    "@types/nanoid-dictionary": "4.2.0",
+    "@types/node": "16.6.0",
+    "@types/pino": "6.3.11",
+    "@types/uuid": "8.3.1",
+    "@types/verror": "1.10.5",
+    "ts-node": "10.2.0",
+    "typescript": "4.3.5"
+  },
+  "dependencies": {
+    "@aws-sdk/client-ssm": "3.25.0",
+    "awilix": "5.0.0",
+    "cls-hooked": "4.2.2",
+    "deep-object-diff": "1.1.7",
+    "dotenv": "10.0.0",
+    "joi": "17.4.2",
+    "mime-types": "2.1.32",
+    "nanoid": "3.1.25",
+    "nanoid-dictionary": "4.3.0",
+    "pino": "6.13.0",
+    "serialize-error": "8.1.0",
+    "shallow-equal-object": "1.1.1",
+    "uuid": "8.3.2",
+    "verror": "1.10.0"
+  },
+  "peerDependencies": {
+    "koa": "2.13.1"
+  }
+}

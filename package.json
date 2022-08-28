@@ -1,0 +1,44 @@
+{
+  "name": "kopeka",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=14"
+  },
+  "author": "Koalisi Pejalan Kaki",
+  "license": "UNLICENSED",
+  "workspaces": [
+    "libs/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "lint": "eslint '*/**/*.{js,ts}' --quiet --fix",
+    "prettier": "prettier --write '**/**.{ts,js}' '*.{json,md,yml}'",
+    "types": "tsc --noEmit",
+    "prepare": "husky install",
+    "inherit": "node tools/package-inherit-cli.js update"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "13.1.0",
+    "@commitlint/config-conventional": "13.1.0",
+    "@types/node": "16.6.0",
+    "@typescript-eslint/eslint-plugin": "4.29.1",
+    "@typescript-eslint/parser": "4.29.1",
+    "eslint": "7.32.0",
+    "eslint-config-prettier": "8.3.0",
+    "eslint-plugin-prettier": "3.4.0",
+    "husky": ">=6",
+    "lint-staged": ">=10",
+    "prettier": "2.3.2",
+    "ts-node": "10.2.0",
+    "typescript": "4.3.5"
+  },
+  "lint-staged": {
+    "*.{js,ts}": [
+      "eslint --quiet --fix"
+    ],
+    "*.{js,ts,json,md}": [
+      "prettier --write"
+    ]
+  }
+}

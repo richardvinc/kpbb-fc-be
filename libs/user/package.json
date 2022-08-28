@@ -1,0 +1,36 @@
+{
+  "name": "@kopeka/user",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=14"
+  },
+  "author": "PT Nomura Research Institute Indonesia",
+  "license": "UNLICENSED",
+  "scripts": {},
+  "devDependencies": {
+    "@types/node": "16.6.0",
+    "@types/secure-random-password": "0.2.1",
+    "@types/lodash": "4.14.173",
+    "knex": "0.21.21",
+    "ts-node": "10.2.0",
+    "typescript": "4.3.5"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "3.23.0",
+    "@aws-sdk/s3-request-presigner": "3.23.0",
+    "@aws-sdk/client-eventbridge": "3.74.0",
+    "@aws-sdk/hash-node": "3.23.0",
+    "@aws-sdk/protocol-http": "3.23.0",
+    "@aws-sdk/url-parser": "3.23.0",
+    "@aws-sdk/util-format-url": "3.23.0",
+    "exceljs": "4.3.0",
+    "joi": "17.4.2",
+    "lodash": "4.17.21",
+    "phin": "3.6.0",
+    "secure-random-password": "0.2.3"
+  },
+  "peerDependencies": {
+    "knex": "0.21.21"
+  }
+}

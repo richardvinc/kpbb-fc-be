@@ -1,0 +1,7 @@
+project: kopeka
+tags:
+  list:
+    - Key: PROJECT
+      Value: KOPEKA
+    - Key: PURPOSE
+      Value: QA

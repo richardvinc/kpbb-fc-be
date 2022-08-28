@@ -1,0 +1,21 @@
+{
+  "name": "@kopeka/db",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=14"
+  },
+  "author": "Koalisi Pejalan Kaki",
+  "license": "UNLICENSED",
+  "scripts": {},
+  "devDependencies": {
+    "@types/node": "16.6.0",
+    "knex": "0.21.21",
+    "ts-node": "10.2.0",
+    "typescript": "4.3.5"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "knex": "0.21.21"
+  }
+}
