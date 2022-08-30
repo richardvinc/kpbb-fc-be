@@ -58,6 +58,9 @@ export class CreateUserUseCase extends UseCase<
       const userExists = await this.userService.get({
         selection: {
           firebaseUid: identity.id,
+          username: dto.user.username
+            ? Username.create(dto.user.username)
+            : undefined,
         },
       });
 

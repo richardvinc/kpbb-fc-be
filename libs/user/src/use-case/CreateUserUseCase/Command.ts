@@ -25,7 +25,7 @@ export const CreateUserCommandSchema = object<CreateUserCommand>({
     version: number().optional(),
     user: object({
       username: Username.SCHEMA.required(),
-      firebaseUid: Username.SCHEMA.required(),
+      firebaseUid: string().required(),
     }),
   }).required(),
   identity: object<ICommandIdentity>({

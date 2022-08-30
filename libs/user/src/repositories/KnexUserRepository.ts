@@ -61,7 +61,7 @@ export class KnexUserRepository
         //   qb.where({ phone_number: options.selection.phoneNumber.value });
         // }
         if (options?.selection?.username) {
-          qb.where({ username: options.selection.username.value });
+          qb.orWhere({ username: options.selection.username.value });
         }
       })
       .first();

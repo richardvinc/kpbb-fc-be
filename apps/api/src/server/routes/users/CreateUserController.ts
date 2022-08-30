@@ -25,7 +25,7 @@ export class CreateUserController extends KoaBaseController<AppContext> {
 
     logger.trace(`BEGIN`);
 
-    const body = this.ctx.request.body as CreateUserBody;
+    const body = (this.ctx.request as any).body as CreateUserBody;
     const identity = this.ctx.identity;
 
     const cmd: ICommandWithIdentity<
