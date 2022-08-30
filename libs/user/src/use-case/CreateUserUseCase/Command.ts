@@ -1,20 +1,22 @@
 import { number, object, string } from "joi";
 
 import { ICommandIdentity, ICommandWithIdentity } from "@kopeka/types";
+import { JSONUserProps } from "@kopeka/user/serializers/JSONUserSerializer";
 
-import { User, Username } from "../../domains";
+import { Username } from "../../domains";
 
 export type CreateUserCommand = ICommandWithIdentity<
   CreateUserDTO,
   ICommandIdentity
 >;
 
-export type CreateUserPayload = User;
+export type CreateUserPayload = JSONUserProps;
 
 export type CreateUserDTO = {
   version?: number;
   user: {
     username: string;
+    firebaseUid: string;
   };
 };
 
@@ -23,6 +25,7 @@ export const CreateUserCommandSchema = object<CreateUserCommand>({
     version: number().optional(),
     user: object({
       username: Username.SCHEMA.required(),
+      firebaseUid: Username.SCHEMA.required(),
     }),
   }).required(),
   identity: object<ICommandIdentity>({

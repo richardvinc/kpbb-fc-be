@@ -1,12 +1,31 @@
 import { asClass, asFunction } from "awilix";
-import { app, apps, auth, credential, initializeApp, messaging } from "firebase-admin";
+import {
+  app,
+  apps,
+  auth,
+  credential,
+  initializeApp,
+  messaging,
+} from "firebase-admin";
 import Knex from "knex";
 
-import { FirebaseTokenProvider, ITokenProvider, VerifyAuthTokenUseCase } from "@kopeka/auth";
-import { ConfigSourceOptions, DefaultCradle, getCurrentHub, initHub } from "@kopeka/core/hub";
+import {
+  FirebaseTokenProvider,
+  ITokenProvider,
+  VerifyAuthTokenUseCase,
+} from "@kopeka/auth";
+import {
+  ConfigSourceOptions,
+  DefaultCradle,
+  getCurrentHub,
+  initHub,
+} from "@kopeka/core/hub";
 import { BaseApplicationService } from "@kopeka/types";
 import {
-    CreateUserUseCase, KnexUserRepository, RetrieveUserUseCase, UserSerive,
+  CreateUserUseCase,
+  KnexUserRepository,
+  RetrieveUserUseCase,
+  UserSerive,
 } from "@kopeka/user";
 import { IUserRepository } from "@kopeka/user/repositories/IUserRepository";
 import { IUSerService } from "@kopeka/user/services/IUserService";
@@ -15,7 +34,6 @@ export interface AppCradle extends DefaultCradle {
   firebaseAuthClient: auth.Auth;
   firebaseMessaging: messaging.Messaging;
   knexClient: Knex;
-  storageImagesBucketName: string;
   imagesDomainName: string;
 
   // providers
@@ -44,9 +62,6 @@ export async function composeApplication(): Promise<void> {
       firebaseAuthClient: useFirebaseAuth(),
       firebaseMessaging: useFirebaseMessaging,
       knexClient: useKnex(),
-      storageImagesBucketName: asFunction(
-        () => process.env.S3_IMAGES_BUCKET_NAME || ""
-      ),
       imagesDomainName: asFunction(() => {
         return process.env.IMAGES_DOMAIN_NAME || "";
       }),

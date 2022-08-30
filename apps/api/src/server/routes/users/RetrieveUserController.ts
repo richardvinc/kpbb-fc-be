@@ -6,8 +6,10 @@ import { RetrieveUserDTO, UserErrors } from "@kopeka/user";
 
 import { AppContext } from "../..";
 
-interface RetrieveUserParams {
+interface RetrieveUserQuery {
   id?: string;
+  firebaseUid?: string;
+  username?: string;
 }
 
 export class RetrieveUserController extends KoaBaseController<AppContext> {
@@ -23,17 +25,17 @@ export class RetrieveUserController extends KoaBaseController<AppContext> {
 
     logger.trace(`BEGIN`);
 
-    const params = this.ctx.params as Partial<RetrieveUserParams>;
+    const query = this.ctx.query as Partial<RetrieveUserQuery>;
 
     const cmd: ICommand<Partial<RetrieveUserDTO>> = {
       dto: {
-        by: { id: params.id },
+        by: {
+          id: query.id,
+          firebaseUid: query.firebaseUid,
+          username: query.username,
+        },
       },
     };
-
-    if (!params.id) {
-      throw new Error("User Id is required");
-    }
 
     const result = await this.ctx.appService.retrieveUser.execute(cmd);
     if (result.isLeft()) {

@@ -1,4 +1,4 @@
-import { MobileNumber, UniqueEntityId } from "@kopeka/core";
+import { UniqueEntityId } from "@kopeka/core";
 import { OrderDirection } from "@kopeka/db/repository/BaseRepository";
 import { KnexBaseRepositoryOptions } from "@kopeka/db/repository/knex";
 
@@ -11,7 +11,8 @@ export enum UserOrderFields {
 export interface GetUserSelection extends KnexBaseRepositoryOptions {
   selection?: {
     id?: UniqueEntityId;
-    phoneNumber?: MobileNumber;
+    firebaseUid?: string;
+    // phoneNumber?: MobileNumber;
     username?: Username;
   };
 }
@@ -26,7 +27,8 @@ export interface GetAllUserSelection extends KnexBaseRepositoryOptions {
 
   selection?: {
     ids?: UniqueEntityId[];
-    phoneNumbers?: MobileNumber[];
+    firebaseUids?: string[];
+    // phoneNumbers?: MobileNumber[];
     usernames?: Username[];
     dateFrom?: Date;
     dateUntil?: Date;
@@ -34,7 +36,8 @@ export interface GetAllUserSelection extends KnexBaseRepositoryOptions {
 
   exclude?: {
     ids?: UniqueEntityId[];
-    phoneNumbers?: string[];
+    firebaseUids?: string[];
+    // phoneNumbers?: string[];
     usernames?: string[];
   };
 }

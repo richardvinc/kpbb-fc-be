@@ -1,4 +1,4 @@
-import { date, object } from "joi";
+import { date, object, string } from "joi";
 
 import { AggregateRoot, UniqueEntityId } from "@kopeka/core/domain";
 import { MobileNumber } from "@kopeka/core/domain/shared";
@@ -8,6 +8,7 @@ import { Guard } from "@kopeka/core/logic";
 import { Username } from "./Username";
 
 interface UserProps {
+  firebaseUid: string;
   phoneNumber?: MobileNumber;
   username?: Username;
 
@@ -18,6 +19,7 @@ interface UserProps {
 
 export interface UserDTO {
   id: string;
+  firebaseUid: string;
   phoneNumber?: string;
   username?: string;
 
@@ -28,12 +30,13 @@ export interface UserDTO {
 
 export class User extends AggregateRoot<UserProps> {
   private static schema = object<UserProps>({
+    firebaseUid: string().required(),
     phoneNumber: object().optional(),
     username: object().optional(),
 
     createdAt: date().optional(),
     updatedAt: date().optional(),
-    deletedAt: date().optional(),
+    deletedAt: date().optional().allow(null),
   }).required();
 
   private constructor(props: UserProps, id?: UniqueEntityId) {
@@ -42,6 +45,10 @@ export class User extends AggregateRoot<UserProps> {
 
   get id(): UniqueEntityId {
     return this._id;
+  }
+
+  get firebaseUid(): string {
+    return this.props.firebaseUid;
   }
 
   get username(): Username | undefined {

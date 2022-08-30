@@ -4,7 +4,10 @@ import { VerifyAuthTokenDTO } from "@kopeka/auth";
 import { AuthErrors } from "@kopeka/auth/errors";
 import { RequestError } from "@kopeka/core/errors";
 import { getCurrentHub } from "@kopeka/core/hub";
-import { asMiddleware, KoaBaseController } from "@kopeka/core/infrastructure/http/koa";
+import {
+  asMiddleware,
+  KoaBaseController,
+} from "@kopeka/core/infrastructure/http/koa";
 import { ICommand } from "@kopeka/types";
 
 import { AppContext } from "../";
@@ -42,7 +45,7 @@ class VerifyAuthTokenController extends KoaBaseController<AppContext> {
       }
     } else {
       const payload = result.value;
-      this.ctx.identity.id = payload.uid;
+      this.ctx.identity.id = payload;
     }
 
     logger.trace(`END`);

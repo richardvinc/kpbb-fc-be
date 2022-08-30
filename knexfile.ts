@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 
-dotenv.config();
+dotenv.config({ path: "./apps/api/.env" });
 
 module.exports = {
   client: "postgresql",

@@ -5,6 +5,9 @@ import { User } from "../domains";
 export interface JSONUserProps {
   id: string;
 
+  firebaseUid: string;
+  username?: string;
+
   createdAt?: string;
   updatedAt?: string;
 }
@@ -18,6 +21,9 @@ export class JSONUserSerializer {
   public static serialize(domain: User): JSONUserProps {
     return {
       id: domain.id.toString(),
+
+      firebaseUid: domain.firebaseUid,
+      username: domain.username?.value.toString(),
 
       createdAt: domain.createdAt?.toISOString(),
       updatedAt: domain.updatedAt?.toISOString(),

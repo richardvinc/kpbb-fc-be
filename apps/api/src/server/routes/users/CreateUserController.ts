@@ -25,7 +25,7 @@ export class CreateUserController extends KoaBaseController<AppContext> {
 
     logger.trace(`BEGIN`);
 
-    const body = this.ctx.body as Partial<CreateUserBody>;
+    const body = this.ctx.request.body as CreateUserBody;
     const identity = this.ctx.identity;
 
     const cmd: ICommandWithIdentity<
@@ -33,7 +33,10 @@ export class CreateUserController extends KoaBaseController<AppContext> {
       Partial<ICommandIdentity>
     > = {
       dto: {
-        user: body.user,
+        user: {
+          username: body.user.username,
+          firebaseUid: identity.id!,
+        },
       },
       identity: {
         id: identity.id,

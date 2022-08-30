@@ -1,11 +1,12 @@
-import { Mapper, MobileNumber, StaticImplements, UniqueEntityId } from "@kopeka/core";
+import { Mapper, StaticImplements, UniqueEntityId } from "@kopeka/core";
 
 import { User, Username } from "../domains";
 
 export interface PostgresUserProps {
   id: string;
-  phone_number: string;
+  firebase_uid: string;
   username?: string;
+  // phone_number?: string;
 
   created_at?: Date;
   updated_at?: Date;
@@ -17,8 +18,11 @@ export class PostgresUserMapper {
   public static toDomain(props: PostgresUserProps): User {
     return User.create(
       {
-        phoneNumber: MobileNumber.create(props.phone_number),
+        firebaseUid: props.firebase_uid,
         username: props.username ? Username.create(props.username) : undefined,
+        // phoneNumber: props.phone_number
+        //   ? MobileNumber.create(props.phone_number)
+        //   : undefined,
 
         createdAt: props.created_at,
         updatedAt: props.updated_at,
@@ -31,8 +35,9 @@ export class PostgresUserMapper {
   public static toPersistence(domain: User): PostgresUserProps {
     return {
       id: domain.id.toString(),
-      phone_number: domain.phoneNumber.toString(),
-      username: domain.username?.toString(),
+      firebase_uid: domain.firebaseUid,
+      username: domain.username?.value.toString(),
+      // phone_number: domain.phoneNumber?.toString(),
 
       created_at: domain.createdAt ?? new Date(),
       updated_at: domain.updatedAt ?? new Date(),

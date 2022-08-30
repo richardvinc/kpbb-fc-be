@@ -2,12 +2,21 @@ import Knex from "knex";
 
 import { getCurrentHub } from "@kopeka/core";
 import { OrderDirection } from "@kopeka/db/repository/BaseRepository";
-import { KnexBaseRepository, KnexBaseRepositoryOptions } from "@kopeka/db/repository/knex";
+import {
+  KnexBaseRepository,
+  KnexBaseRepositoryOptions,
+} from "@kopeka/db/repository/knex";
 
 import { User } from "../domains";
-import { PostgresUserMapper, PostgresUserProps } from "../mappers/PostgresUserMapper";
 import {
-    GetAllUserSelection, GetUserSelection, IUserRepository, UserOrderFields,
+  PostgresUserMapper,
+  PostgresUserProps,
+} from "../mappers/PostgresUserMapper";
+import {
+  GetAllUserSelection,
+  GetUserSelection,
+  IUserRepository,
+  UserOrderFields,
 } from "./IUserRepository";
 
 interface Cradle {
@@ -43,11 +52,14 @@ export class KnexUserRepository
       .modify((qb) => {
         // filters
         if (options?.selection?.id) {
-          qb.where({ id: options.selection.id.toString() });
+          qb.orWhere({ id: options.selection.id.toString() });
         }
-        if (options?.selection?.phoneNumber) {
-          qb.where({ phone_number: options.selection.phoneNumber.value });
+        if (options?.selection?.firebaseUid) {
+          qb.orWhere({ firebase_uid: options.selection.firebaseUid });
         }
+        // if (options?.selection?.phoneNumber) {
+        //   qb.where({ phone_number: options.selection.phoneNumber.value });
+        // }
         if (options?.selection?.username) {
           qb.where({ username: options.selection.username.value });
         }
@@ -56,9 +68,9 @@ export class KnexUserRepository
 
     logger.info({ query: query.toQuery() });
 
-    const rows = await query;
+    const row = await query;
 
-    if (rows.length > 0) user = PostgresUserMapper.toDomain(rows[0]);
+    if (row) user = PostgresUserMapper.toDomain(row);
 
     logger.trace(`END`);
     return user;
@@ -83,14 +95,20 @@ export class KnexUserRepository
             options.selection.ids.map((id) => id.toString())
           );
         }
-        if (options?.selection?.phoneNumbers) {
+        if (options?.selection?.firebaseUids) {
           qb.whereIn(
-            "phone_number",
-            options.selection.phoneNumbers.map(
-              (phoneNumber) => phoneNumber.value
-            )
+            "id",
+            options.selection.firebaseUids.map((id) => id)
           );
         }
+        // if (options?.selection?.phoneNumbers) {
+        //   qb.whereIn(
+        //     "phone_number",
+        //     options.selection.phoneNumbers.map(
+        //       (phoneNumber) => phoneNumber.value
+        //     )
+        //   );
+        // }
         if (options?.selection?.usernames) {
           qb.whereIn(
             "username",
@@ -164,14 +182,20 @@ export class KnexUserRepository
             options.selection.ids.map((id) => id.toString())
           );
         }
-        if (options?.selection?.phoneNumbers) {
+        if (options?.selection?.firebaseUids) {
           qb.whereIn(
-            "phone_number",
-            options.selection.phoneNumbers.map(
-              (phoneNumber) => phoneNumber.value
-            )
+            "id",
+            options.selection.firebaseUids.map((id) => id)
           );
         }
+        // if (options?.selection?.phoneNumbers) {
+        //   qb.whereIn(
+        //     "phone_number",
+        //     options.selection.phoneNumbers.map(
+        //       (phoneNumber) => phoneNumber.value
+        //     )
+        //   );
+        // }
         if (options?.selection?.usernames) {
           qb.whereIn(
             "username",

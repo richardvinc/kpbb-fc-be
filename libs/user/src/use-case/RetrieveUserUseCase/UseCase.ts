@@ -1,12 +1,22 @@
 import {
-    BaseResponse, getCurrentHub, InternalError, left, right, UniqueEntityId, UseCase,
+  BaseResponse,
+  getCurrentHub,
+  InternalError,
+  left,
+  right,
+  UniqueEntityId,
+  UseCase,
 } from "@kopeka/core";
+import { JSONUserSerializer } from "@kopeka/user/serializers/JSONUserSerializer";
 
 import { Username } from "../../domains";
 import { UserErrors } from "../../errors";
 import { IUSerService } from "../../services/IUserService";
 import {
-    RetrieveUserCommand, RetrieveUserCommandSchema, RetrieveUserDTO, RetrieveUserPayload,
+  RetrieveUserCommand,
+  RetrieveUserCommandSchema,
+  RetrieveUserDTO,
+  RetrieveUserPayload,
 } from "./Command";
 
 interface Cradle {
@@ -49,6 +59,7 @@ export class RetrieveUserUseCase extends UseCase<
       const user = await this.userService.get({
         selection: {
           id: dto.by?.id ? new UniqueEntityId(dto.by.id) : undefined,
+          firebaseUid: dto.by?.firebaseUid ? dto.by.firebaseUid : undefined,
           username: dto.by?.username
             ? Username.create(dto.by.username)
             : undefined,
@@ -58,7 +69,7 @@ export class RetrieveUserUseCase extends UseCase<
       if (!user) return left(new UserErrors.UserNotFoundError());
 
       logger.trace(`END`);
-      return right(user);
+      return right(JSONUserSerializer.serialize(user));
     } catch (err) {
       logger.warn({ error: err });
       return left(new InternalError.UnexpectedError(err as Error));

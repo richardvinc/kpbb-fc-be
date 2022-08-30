@@ -12,7 +12,7 @@ export function registerUsersRoutes(
   router: Router<DefaultState, AppContext>
 ): void {
   router.get(
-    "/users/:id",
+    "/users",
     VerifyAuthToken(),
     asMiddleware(new RetrieveUserController())
   );
