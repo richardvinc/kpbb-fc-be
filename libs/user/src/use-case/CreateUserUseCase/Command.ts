@@ -1,7 +1,7 @@
 import { number, object, string } from "joi";
 
-import { ICommandIdentity, ICommandWithIdentity } from "@kopeka/types";
-import { JSONUserProps } from "@kopeka/user/serializers/JSONUserSerializer";
+import { ICommandIdentity, ICommandWithIdentity } from "@KPBBFC/types";
+import { JSONUserProps } from "@KPBBFC/user/serializers/JSONUserSerializer";
 
 import { Username } from "../../domains";
 

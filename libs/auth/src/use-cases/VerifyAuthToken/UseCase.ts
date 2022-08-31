@@ -1,10 +1,18 @@
-import { AuthErrors } from "@kopeka/auth/errors";
-import { ITokenProvider } from "@kopeka/auth/providers";
-import { BaseResponse, getCurrentHub, left, right, UseCase } from "@kopeka/core";
+import { AuthErrors } from "@KPBBFC/auth/errors";
+import { ITokenProvider } from "@KPBBFC/auth/providers";
+import {
+  BaseResponse,
+  getCurrentHub,
+  left,
+  right,
+  UseCase,
+} from "@KPBBFC/core";
 
 import {
-    VerifyAuthTokenCommand, VerifyAuthTokenCommandSchema, VerifyAuthTokenDTO,
-    VerifyAuthTokenPayload,
+  VerifyAuthTokenCommand,
+  VerifyAuthTokenCommandSchema,
+  VerifyAuthTokenDTO,
+  VerifyAuthTokenPayload,
 } from "./Command";
 
 interface Cradle {

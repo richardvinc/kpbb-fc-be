@@ -1,6 +1,6 @@
-import { UniqueEntityId } from "@kopeka/core";
-import { OrderDirection } from "@kopeka/db/repository/BaseRepository";
-import { KnexBaseRepositoryOptions } from "@kopeka/db/repository/knex";
+import { UniqueEntityId } from "@KPBBFC/core";
+import { OrderDirection } from "@KPBBFC/db/repository/BaseRepository";
+import { KnexBaseRepositoryOptions } from "@KPBBFC/db/repository/knex";
 
 import { User, Username } from "../domains";
 

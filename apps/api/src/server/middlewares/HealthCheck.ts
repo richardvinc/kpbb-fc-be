@@ -1,7 +1,7 @@
 import { Context, Middleware } from "koa";
 
-import { getCurrentHub } from "@kopeka/core/hub";
-import { HttpSuccessResponse } from "@kopeka/types";
+import { getCurrentHub } from "@KPBBFC/core/hub";
+import { HttpSuccessResponse } from "@KPBBFC/types";
 
 interface HealthCheckOptions {
   method?: "GET" | "HEAD" | "POST";

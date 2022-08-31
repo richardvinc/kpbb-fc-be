@@ -2,8 +2,8 @@ import { IncomingHttpHeaders, OutgoingHttpHeaders } from "http";
 import { Middleware } from "koa";
 import { ParsedUrlQuery } from "querystring";
 
-import { getCurrentHub } from "@kopeka/core/hub";
-import { ILogger } from "@kopeka/types";
+import { getCurrentHub } from "@KPBBFC/core/hub";
+import { ILogger } from "@KPBBFC/types";
 
 interface RequestLogOptions {
   logger: ILogger;

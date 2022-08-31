@@ -3,7 +3,13 @@ import { Namespace } from "cls-hooked";
 import { customAlphabet } from "nanoid";
 import { alphanumeric } from "nanoid-dictionary";
 
-import { BaseApplicationService, IGlobalObject, IHub, ILogger, Registry } from "@kopeka/types";
+import {
+  BaseApplicationService,
+  IGlobalObject,
+  IHub,
+  ILogger,
+  Registry,
+} from "@KPBBFC/types";
 
 import { DefaultCradle } from "./DefaultCradle";
 
@@ -15,8 +21,8 @@ export function getCurrentHub<
 >(): T {
   const registry = getMainRegistry();
 
-  if (registry.__KOPEKA__ && registry.__KOPEKA__.hub) {
-    return registry.__KOPEKA__.hub as T;
+  if (registry.__KPBBFC__ && registry.__KPBBFC__.hub) {
+    return registry.__KPBBFC__.hub as T;
   } else {
     throw new Error(`Hub is not available on registry`);
   }
@@ -82,13 +88,13 @@ export function registerHub(
   hub: IHub<DefaultCradle, BaseApplicationService>
 ): void {
   const registry = getMainRegistry();
-  registry.__KOPEKA__ = registry.__KOPEKA__ || {};
-  registry.__KOPEKA__.hub = hub;
+  registry.__KPBBFC__ = registry.__KPBBFC__ || {};
+  registry.__KPBBFC__.hub = hub;
 }
 
 function getMainRegistry(): Registry {
   const registry = getGlobalObject();
-  registry.__KOPEKA__ = registry.__KOPEKA__ || {
+  registry.__KPBBFC__ = registry.__KPBBFC__ || {
     hub: undefined,
   };
   return registry;

@@ -1,4 +1,4 @@
-import { Serializer, StaticImplements } from "@kopeka/core";
+import { Serializer, StaticImplements } from "@KPBBFC/core";
 
 import { User } from "../domains";
 

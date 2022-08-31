@@ -3,17 +3,17 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@kopeka/auth": ["libs/auth/src"],
-      "@kopeka/core": ["libs/core/src"],
-      "@kopeka/db": ["libs/db/src"],
-      "@kopeka/types": ["libs/types/src"],
-      "@kopeka/user": ["libs/user/src"],
+      "@KPBBFC/auth": ["libs/auth/src"],
+      "@KPBBFC/core": ["libs/core/src"],
+      "@KPBBFC/db": ["libs/db/src"],
+      "@KPBBFC/types": ["libs/types/src"],
+      "@KPBBFC/user": ["libs/user/src"],
 
-      "@kopeka/auth/*": ["libs/auth/src/*"],
-      "@kopeka/core/*": ["libs/core/src/*"],
-      "@kopeka/db/*": ["libs/db/src/*"],
-      "@kopeka/types/*": ["libs/types/src/*"],
-      "@kopeka/user/*": ["libs/user/src/*"]
+      "@KPBBFC/auth/*": ["libs/auth/src/*"],
+      "@KPBBFC/core/*": ["libs/core/src/*"],
+      "@KPBBFC/db/*": ["libs/db/src/*"],
+      "@KPBBFC/types/*": ["libs/types/src/*"],
+      "@KPBBFC/user/*": ["libs/user/src/*"]
     },
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,

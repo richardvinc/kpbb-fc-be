@@ -1,8 +1,8 @@
 import { object } from "joi";
 
-import { Guard, InternalError } from "@kopeka/core";
-import { AggregateRoot, UniqueEntityId } from "@kopeka/core/domain";
-import { IFileInfo } from "@kopeka/types";
+import { Guard, InternalError } from "@KPBBFC/core";
+import { AggregateRoot, UniqueEntityId } from "@KPBBFC/core/domain";
+import { IFileInfo } from "@KPBBFC/types";
 
 import { ImageId } from "./ImageId";
 

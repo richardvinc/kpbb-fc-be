@@ -13,22 +13,22 @@ import {
   FirebaseTokenProvider,
   ITokenProvider,
   VerifyAuthTokenUseCase,
-} from "@kopeka/auth";
+} from "@KPBBFC/auth";
 import {
   ConfigSourceOptions,
   DefaultCradle,
   getCurrentHub,
   initHub,
-} from "@kopeka/core/hub";
-import { BaseApplicationService } from "@kopeka/types";
+} from "@KPBBFC/core/hub";
+import { BaseApplicationService } from "@KPBBFC/types";
 import {
   CreateUserUseCase,
   KnexUserRepository,
   RetrieveUserUseCase,
   UserSerive,
-} from "@kopeka/user";
-import { IUserRepository } from "@kopeka/user/repositories/IUserRepository";
-import { IUSerService } from "@kopeka/user/services/IUserService";
+} from "@KPBBFC/user";
+import { IUserRepository } from "@KPBBFC/user/repositories/IUserRepository";
+import { IUSerService } from "@KPBBFC/user/services/IUserService";
 
 export interface AppCradle extends DefaultCradle {
   firebaseAuthClient: auth.Auth;

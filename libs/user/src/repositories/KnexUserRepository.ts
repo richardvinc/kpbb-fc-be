@@ -1,11 +1,11 @@
 import Knex from "knex";
 
-import { getCurrentHub } from "@kopeka/core";
-import { OrderDirection } from "@kopeka/db/repository/BaseRepository";
+import { getCurrentHub } from "@KPBBFC/core";
+import { OrderDirection } from "@KPBBFC/db/repository/BaseRepository";
 import {
   KnexBaseRepository,
   KnexBaseRepositoryOptions,
-} from "@kopeka/db/repository/knex";
+} from "@KPBBFC/db/repository/knex";
 
 import { User } from "../domains";
 import {

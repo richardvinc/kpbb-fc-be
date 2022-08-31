@@ -1,6 +1,6 @@
 import { Namespace } from "cls-hooked";
 
-import { BaseCradle, ILoggerManager, Stage } from "@kopeka/types";
+import { BaseCradle, ILoggerManager, Stage } from "@KPBBFC/types";
 
 export interface DefaultCradle extends BaseCradle {
   awsRegion: string;

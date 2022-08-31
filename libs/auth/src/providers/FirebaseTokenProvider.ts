@@ -1,6 +1,6 @@
 import { auth } from "firebase-admin";
 
-import { BaseProvider } from "@kopeka/core/providers";
+import { BaseProvider } from "@KPBBFC/core/providers";
 
 import { ITokenProvider } from "./ITokenProvider";
 

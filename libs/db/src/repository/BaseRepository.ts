@@ -1,5 +1,5 @@
-import { getCurrentHub } from "@kopeka/core/hub";
-import { ILogger } from "@kopeka/types/Logger";
+import { getCurrentHub } from "@KPBBFC/core/hub";
+import { ILogger } from "@KPBBFC/types/Logger";
 
 export enum OrderDirection {
   ASC,

@@ -1,9 +1,9 @@
 import { date, object, string } from "joi";
 
-import { AggregateRoot, UniqueEntityId } from "@kopeka/core/domain";
-import { MobileNumber } from "@kopeka/core/domain/shared";
-import { InternalError } from "@kopeka/core/errors";
-import { Guard } from "@kopeka/core/logic";
+import { AggregateRoot, UniqueEntityId } from "@KPBBFC/core/domain";
+import { MobileNumber } from "@KPBBFC/core/domain/shared";
+import { InternalError } from "@KPBBFC/core/errors";
+import { Guard } from "@KPBBFC/core/logic";
 
 import { Username } from "./Username";
 

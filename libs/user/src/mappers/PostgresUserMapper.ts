@@ -1,4 +1,4 @@
-import { Mapper, StaticImplements, UniqueEntityId } from "@kopeka/core";
+import { Mapper, StaticImplements, UniqueEntityId } from "@KPBBFC/core";
 
 import { User, Username } from "../domains";
 

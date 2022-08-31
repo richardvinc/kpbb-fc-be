@@ -1,14 +1,14 @@
 import { DefaultState, Middleware } from "koa";
 
-import { VerifyAuthTokenDTO } from "@kopeka/auth";
-import { AuthErrors } from "@kopeka/auth/errors";
-import { RequestError } from "@kopeka/core/errors";
-import { getCurrentHub } from "@kopeka/core/hub";
+import { VerifyAuthTokenDTO } from "@KPBBFC/auth";
+import { AuthErrors } from "@KPBBFC/auth/errors";
+import { RequestError } from "@KPBBFC/core/errors";
+import { getCurrentHub } from "@KPBBFC/core/hub";
 import {
   asMiddleware,
   KoaBaseController,
-} from "@kopeka/core/infrastructure/http/koa";
-import { ICommand } from "@kopeka/types";
+} from "@KPBBFC/core/infrastructure/http/koa";
+import { ICommand } from "@KPBBFC/types";
 
 import { AppContext } from "../";
 

@@ -1,8 +1,8 @@
-import { RequestError } from "@kopeka/core/errors";
-import { getCurrentHub } from "@kopeka/core/hub";
-import { KoaBaseController } from "@kopeka/core/infrastructure/http/koa";
-import { ICommandIdentity, ICommandWithIdentity } from "@kopeka/types";
-import { CreateUserDTO, UserErrors } from "@kopeka/user";
+import { RequestError } from "@KPBBFC/core/errors";
+import { getCurrentHub } from "@KPBBFC/core/hub";
+import { KoaBaseController } from "@KPBBFC/core/infrastructure/http/koa";
+import { ICommandIdentity, ICommandWithIdentity } from "@KPBBFC/types";
+import { CreateUserDTO, UserErrors } from "@KPBBFC/user";
 
 import { AppContext } from "../..";
 

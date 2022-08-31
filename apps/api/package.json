@@ -1,11 +1,11 @@
 {
-  "name": "@kopeka-apps/api",
+  "name": "kpbbfc",
   "version": "1.0.0",
   "private": true,
   "engines": {
     "node": ">=14"
   },
-  "author": "Koalisi Pejalan Kaki",
+  "author": "KPBB",
   "license": "UNLICENSED",
   "scripts": {
     "dev": "./node_modules/.bin/gulp build --stage dev --watch",
@@ -72,8 +72,8 @@
     "verror": "1.10.0"
   },
   "inherits": [
-    "@kopeka/core",
-    "@kopeka/sentry",
-    "@kopeka/types"
+    "@KPBBFC/core",
+    "@KPBBFC/sentry",
+    "@KPBBFC/types"
   ]
 }

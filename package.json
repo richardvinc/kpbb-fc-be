@@ -1,11 +1,11 @@
 {
-  "name": "kopeka",
+  "name": "kpbbfc",
   "version": "1.0.0",
   "private": true,
   "engines": {
     "node": ">=14"
   },
-  "author": "Koalisi Pejalan Kaki",
+  "author": "KPBB",
   "license": "UNLICENSED",
   "workspaces": [
     "libs/*",

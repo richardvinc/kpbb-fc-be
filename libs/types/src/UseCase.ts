@@ -1,4 +1,4 @@
-import { User } from "@kopeka/user";
+import { User } from "@KPBBFC/user";
 
 export interface IUseCase<IDTO extends object, IResponse> {
   execute(command: ICommand<IDTO>): Promise<IResponse>;

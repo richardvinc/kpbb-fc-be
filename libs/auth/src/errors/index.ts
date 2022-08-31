@@ -1,4 +1,4 @@
-import { BaseError } from "@kopeka/core";
+import { BaseError } from "@KPBBFC/core";
 
 export namespace AuthErrors {
   export class InvalidPhoneNumber extends BaseError {

@@ -6,8 +6,8 @@ import {
   right,
   UniqueEntityId,
   UseCase,
-} from "@kopeka/core";
-import { JSONUserSerializer } from "@kopeka/user/serializers/JSONUserSerializer";
+} from "@KPBBFC/core";
+import { JSONUserSerializer } from "@KPBBFC/user/serializers/JSONUserSerializer";
 
 import { Username } from "../../domains";
 import { UserErrors } from "../../errors";

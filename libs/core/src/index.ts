@@ -1,4 +1,4 @@
-export * from "@kopeka/types";
+export * from "@KPBBFC/types";
 export * from "./app";
 export * from "./decorators";
 export * from "./domain";

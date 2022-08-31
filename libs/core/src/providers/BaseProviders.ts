@@ -1,4 +1,4 @@
-import { ILogger } from "@kopeka/types/Logger";
+import { ILogger } from "@KPBBFC/types/Logger";
 
 import { getCurrentHub } from "../hub";
 

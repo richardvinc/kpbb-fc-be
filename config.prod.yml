@@ -1,7 +1,7 @@
-project: kopeka
+project: KPBBFC
 tags:
   list:
     - Key: PROJECT
-      Value: KOPEKA
+      Value: KPBBFC
     - Key: PURPOSE
       Value: Production

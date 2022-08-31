@@ -1,7 +1,7 @@
 import { DefaultState } from "koa";
 
 import Router from "@koa/router";
-import { asMiddleware } from "@kopeka/core/infrastructure/http/koa";
+import { asMiddleware } from "@KPBBFC/core/infrastructure/http/koa";
 
 import { AppContext } from "../..";
 import { VerifyAuthToken } from "../../middlewares/VerifyAuthToken";

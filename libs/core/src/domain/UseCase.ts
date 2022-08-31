@@ -1,6 +1,6 @@
 import { ObjectSchema } from "joi";
 
-import { ICommand, ILogger, IUseCase } from "@kopeka/types";
+import { ICommand, ILogger, IUseCase } from "@KPBBFC/types";
 
 import { BaseError, InternalError, RequestError } from "../errors";
 import { getCurrentHub } from "../hub";

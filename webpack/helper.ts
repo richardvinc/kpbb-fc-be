@@ -6,7 +6,7 @@ export function getPathAliases(): { [key: string]: string } {
   const aliases: { [key: string]: string } = {};
 
   packages.map((x) => {
-    aliases[`@kopeka/${x}`] = path.resolve(__dirname, `../libs/${x}/src`);
+    aliases[`@KPBBFC/${x}`] = path.resolve(__dirname, `../libs/${x}/src`);
   });
 
   return aliases;

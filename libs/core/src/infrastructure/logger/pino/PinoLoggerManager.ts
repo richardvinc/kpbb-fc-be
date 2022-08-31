@@ -1,4 +1,4 @@
-import { ILoggerCollection, ILoggerManager, LogLevel } from "@kopeka/types";
+import { ILoggerCollection, ILoggerManager, LogLevel } from "@KPBBFC/types";
 
 import { PinoLogger } from "./PinoLogger";
 

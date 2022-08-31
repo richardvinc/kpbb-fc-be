@@ -1,9 +1,18 @@
-import { asFunction, asValue, createContainer, NameAndRegistrationPair } from "awilix";
+import {
+  asFunction,
+  asValue,
+  createContainer,
+  NameAndRegistrationPair,
+} from "awilix";
 import { createNamespace } from "cls-hooked";
 
-import { BaseApplicationService, LogLevel } from "@kopeka/types";
+import { BaseApplicationService, LogLevel } from "@KPBBFC/types";
 
-import { DotEnvConfigLoader, NoopConfigLoader, SSMConfigLoader } from "../config/loader";
+import {
+  DotEnvConfigLoader,
+  NoopConfigLoader,
+  SSMConfigLoader,
+} from "../config/loader";
 import { IConfigLoader } from "../config/loader/IConfigLoader";
 import { PinoLoggerManager } from "../infrastructure/logger/pino";
 import { Hub, registerHub } from "./";
@@ -39,7 +48,7 @@ export async function initHub<
 
   container.register({
     awsRegion: asValue(process.env.DEFAULT_AWS_REGION || "ap-southeast-1"),
-    namespace: asValue(createNamespace("__KOPEKA__")),
+    namespace: asValue(createNamespace("__KPBBFC__")),
     loggerManager: usePinoLoggerManager(),
     stage: asValue(process.env.STAGE || "dev"),
     ...options.cradle,

@@ -1,10 +1,12 @@
 import Knex from "knex";
 
-import { BaseService, getCurrentHub } from "@kopeka/core";
+import { BaseService, getCurrentHub } from "@KPBBFC/core";
 
 import { User } from "../domains";
 import {
-    GetAllUserSelection, GetUserSelection, IUserRepository,
+  GetAllUserSelection,
+  GetUserSelection,
+  IUserRepository,
 } from "../repositories/IUserRepository";
 import { IUSerService } from "./IUserService";
 

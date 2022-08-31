@@ -1,6 +1,6 @@
 import pino, { Bindings, Logger } from "pino";
 
-import { ILogger } from "@kopeka/types";
+import { ILogger } from "@KPBBFC/types";
 
 interface PinoLoggerOptions {
   name: string;

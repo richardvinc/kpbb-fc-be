@@ -1,6 +1,6 @@
 import { number, object, string } from "joi";
 
-import { ICommand } from "@kopeka/types";
+import { ICommand } from "@KPBBFC/types";
 
 export type VerifyAuthTokenCommand = ICommand<VerifyAuthTokenDTO>;
 

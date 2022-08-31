@@ -1,6 +1,6 @@
 import { string } from "joi";
 
-import { Guard, InternalError, ValueObject } from "@kopeka/core";
+import { Guard, InternalError, ValueObject } from "@KPBBFC/core";
 
 export interface OTPProps {
   value: string;

@@ -5,9 +5,9 @@ import helmet from "koa-helmet";
 import qs from "koa-qs";
 
 import cors from "@koa/cors";
-import { getCurrentHub } from "@kopeka/core/hub";
-import { ILogger } from "@kopeka/types";
-import { User } from "@kopeka/user";
+import { getCurrentHub } from "@KPBBFC/core/hub";
+import { ILogger } from "@KPBBFC/types";
+import { User } from "@KPBBFC/user";
 
 import { ApplicationService } from "../app/";
 import { HealthCheck } from "./middlewares/HealthCheck";

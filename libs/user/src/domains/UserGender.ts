@@ -1,8 +1,8 @@
 import { string } from "joi";
 
-import { ValueObject } from "@kopeka/core/domain";
-import { InternalError } from "@kopeka/core/errors";
-import { Guard } from "@kopeka/core/logic";
+import { ValueObject } from "@KPBBFC/core/domain";
+import { InternalError } from "@KPBBFC/core/errors";
+import { Guard } from "@KPBBFC/core/logic";
 
 export interface UserGenderProps {
   value: "M" | "F";

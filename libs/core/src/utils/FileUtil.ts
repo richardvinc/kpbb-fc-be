@@ -1,7 +1,7 @@
 import { contentType, extension } from "mime-types";
 import path from "path";
 
-import { IFileInfo } from "@kopeka/types";
+import { IFileInfo } from "@KPBBFC/types";
 
 export class FileUtil {
   public static getFileInfoFromUrl(url: string): IFileInfo {

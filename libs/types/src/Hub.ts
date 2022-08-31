@@ -16,13 +16,13 @@ export interface IHub<
 }
 
 export interface Registry {
-  __KOPEKA__?: {
+  __KPBBFC__?: {
     hub?: IHub<{}, {}>;
   };
 }
 
 export interface IGlobalObject {
-  __KOPEKA__: {
+  __KPBBFC__: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     hub: any;
   };

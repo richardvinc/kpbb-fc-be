@@ -63,7 +63,7 @@ export const getWebpackConfig = (
     ],
     externals: [
       NodeExternals({
-        allowlist: [/^@kopeka/],
+        allowlist: [/^@KPBBFC/],
         modulesFromFile: true,
         modulesDir: path.resolve(__dirname, "../../node_modules"),
       }),
