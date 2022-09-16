@@ -6,15 +6,17 @@ import { RetrieveUserDTO, UserErrors } from "@KPBBFC/user";
 
 import { AppContext } from "../..";
 
+interface RetrieveUserParams {
+  id: string;
+}
+
 interface RetrieveUserQuery {
-  id?: string;
-  firebaseUid?: string;
-  username?: string;
+  by: "id" | "firebaseUid" | "username";
 }
 
 export class RetrieveUserController extends KoaBaseController<AppContext> {
   constructor() {
-    super("RetrieveByIdController");
+    super("RetrieveUserController");
   }
 
   async executeImpl(): Promise<void> {
@@ -25,16 +27,43 @@ export class RetrieveUserController extends KoaBaseController<AppContext> {
 
     logger.trace(`BEGIN`);
 
+    const params = this.ctx.params as RetrieveUserParams;
     const query = this.ctx.query as Partial<RetrieveUserQuery>;
 
+    let dto: Partial<RetrieveUserDTO> = {};
+    switch (query.by) {
+      case "id":
+        dto = {
+          by: {
+            id: params.id,
+          },
+        };
+        break;
+      case "firebaseUid":
+        dto = {
+          by: {
+            firebaseUid: params.id,
+          },
+        };
+        break;
+      case "username":
+        dto = {
+          by: {
+            username: params.id,
+          },
+        };
+        break;
+      default:
+        dto = {
+          by: {
+            id: params.id,
+          },
+        };
+        break;
+    }
+
     const cmd: ICommand<Partial<RetrieveUserDTO>> = {
-      dto: {
-        by: {
-          id: query.id,
-          firebaseUid: query.firebaseUid,
-          username: query.username,
-        },
-      },
+      dto,
     };
 
     const result = await this.ctx.appService.retrieveUser.execute(cmd);

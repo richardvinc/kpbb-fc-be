@@ -24,6 +24,7 @@ import { BaseApplicationService } from "@KPBBFC/types";
 import {
   CreateUserUseCase,
   KnexUserRepository,
+  RetrieveUserListUseCase,
   RetrieveUserUseCase,
   UserSerive,
 } from "@KPBBFC/user";
@@ -53,6 +54,7 @@ export interface ApplicationService extends BaseApplicationService {
   // user
   createUser: CreateUserUseCase;
   retrieveUser: RetrieveUserUseCase;
+  retrieveUserList: RetrieveUserListUseCase;
 }
 
 export async function composeApplication(): Promise<void> {
@@ -82,6 +84,7 @@ export async function composeApplication(): Promise<void> {
       // user
       createUser: asClass(CreateUserUseCase).singleton(),
       retrieveUser: asClass(RetrieveUserUseCase).singleton(),
+      retrieveUserList: asClass(RetrieveUserListUseCase).singleton(),
     },
   });
 }

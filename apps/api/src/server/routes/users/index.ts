@@ -7,6 +7,7 @@ import { AppContext } from "../..";
 import { VerifyAuthToken } from "../../middlewares/VerifyAuthToken";
 import { CreateUserController } from "./CreateUserController";
 import { RetrieveUserController } from "./RetrieveUserController";
+import { RetrieveUserListController } from "./RetrieveUserListController";
 
 export function registerUsersRoutes(
   router: Router<DefaultState, AppContext>
@@ -14,11 +15,16 @@ export function registerUsersRoutes(
   router.get(
     "/users",
     VerifyAuthToken(),
-    asMiddleware(new RetrieveUserController())
+    asMiddleware(new RetrieveUserListController())
   );
   router.post(
-    "/users/",
+    "/users",
     VerifyAuthToken(),
     asMiddleware(new CreateUserController())
+  );
+  router.get(
+    "/users/:id",
+    VerifyAuthToken(),
+    asMiddleware(new RetrieveUserController())
   );
 }
