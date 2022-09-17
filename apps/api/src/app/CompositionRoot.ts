@@ -23,13 +23,13 @@ import {
 import { BaseApplicationService } from "@KPBBFC/types";
 import {
   CreateUserUseCase,
+  IUserRepository,
+  IUSerService,
   KnexUserRepository,
   RetrieveUserListUseCase,
   RetrieveUserUseCase,
   UserSerive,
 } from "@KPBBFC/user";
-import { IUserRepository } from "@KPBBFC/user/repositories/IUserRepository";
-import { IUSerService } from "@KPBBFC/user/services/IUserService";
 
 export interface AppCradle extends DefaultCradle {
   firebaseAuthClient: auth.Auth;

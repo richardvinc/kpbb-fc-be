@@ -1,3 +1,4 @@
+export * from "./Dimension";
 export * from "./Email";
 export * from "./FCMToken";
 export * from "./FullName";

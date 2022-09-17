@@ -6,9 +6,9 @@ import {
   right,
   UseCase,
 } from "@KPBBFC/core";
-import { JSONUserSerializer } from "@KPBBFC/user/serializers/JSONUserSerializer";
 
 import { UserErrors } from "../../errors";
+import { JSONUserSerializer } from "../../serializers";
 import { IUSerService } from "../../services/IUserService";
 import {
   RetrieveUserListCommand,

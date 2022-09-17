@@ -17,17 +17,6 @@ interface UserProps {
   deletedAt?: Date;
 }
 
-export interface UserDTO {
-  id: string;
-  firebaseUid: string;
-  phoneNumber?: string;
-  username?: string;
-
-  createdAt?: string;
-  updatedAt?: string;
-  deletedAt?: string;
-}
-
 export class User extends AggregateRoot<UserProps> {
   private static schema = object<UserProps>({
     firebaseUid: string().required(),

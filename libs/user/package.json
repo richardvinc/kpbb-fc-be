@@ -5,7 +5,7 @@
   "engines": {
     "node": ">=14"
   },
-  "author": "PT Nomura Research Institute Indonesia",
+  "author": "KPBB",
   "license": "UNLICENSED",
   "scripts": {},
   "devDependencies": {
@@ -24,7 +24,6 @@
     "@aws-sdk/protocol-http": "3.23.0",
     "@aws-sdk/url-parser": "3.23.0",
     "@aws-sdk/util-format-url": "3.23.0",
-    "exceljs": "4.3.0",
     "joi": "17.4.2",
     "lodash": "4.17.21",
     "phin": "3.6.0",

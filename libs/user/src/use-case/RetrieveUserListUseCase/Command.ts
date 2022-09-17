@@ -1,7 +1,7 @@
 import { number, object, string } from "joi";
 
 import { ICommandIdentity, ICommandWithIdentity } from "@KPBBFC/types";
-import { JSONUserProps } from "@KPBBFC/user/serializers/JSONUserSerializer";
+import { JSONUserProps } from "@KPBBFC/user";
 
 export type RetrieveUserListCommand = ICommandWithIdentity<
   RetrieveUserListDTO,

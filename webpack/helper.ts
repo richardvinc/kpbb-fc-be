@@ -1,7 +1,7 @@
 import path from "path";
 
 export function getPathAliases(): { [key: string]: string } {
-  const packages = ["auth", "core", "db", "sentry", "types", "user"];
+  const packages = ["auth", "core", "db", "sentry", "types", "user", "car"];
 
   const aliases: { [key: string]: string } = {};
 

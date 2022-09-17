@@ -9,11 +9,7 @@ export interface UsernameProps {
 }
 
 export class Username extends ValueObject<UsernameProps> {
-  public static SCHEMA = string()
-    .required()
-    .min(4)
-    .max(30)
-    .regex(/[a-z0-9._]{4,15}$/);
+  public static SCHEMA = string().required().min(4).max(50);
 
   get value(): string {
     return this.props.value;

@@ -7,10 +7,10 @@ import {
   UniqueEntityId,
   UseCase,
 } from "@KPBBFC/core";
-import { JSONUserSerializer } from "@KPBBFC/user/serializers/JSONUserSerializer";
 
 import { Username } from "../../domains";
 import { UserErrors } from "../../errors";
+import { JSONUserSerializer } from "../../serializers";
 import { IUSerService } from "../../services/IUserService";
 import {
   RetrieveUserCommand,

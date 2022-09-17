@@ -7,36 +7,36 @@ import {
   KnexBaseRepositoryOptions,
 } from "@KPBBFC/db/repository/knex";
 
-import { User } from "../domains";
+import { Car } from "../domains";
 import {
-  PostgresUserMapper,
-  PostgresUserProps,
-} from "../mappers/PostgresUserMapper";
+  PostgresCarMapper,
+  PostgresCarProps,
+} from "../mappers/PostgresCarMapper";
 import {
-  GetAllUserSelection,
-  GetUserSelection,
-  IUserRepository,
-  UserOrderFields,
-} from "./IUserRepository";
+  CarOrderFields,
+  GetAllCarSelection,
+  GetCarSelection,
+  ICarRepository,
+} from "./ICarRepository";
 
 interface Cradle {
   knexClient: Knex;
 }
 
 const orderFields = {
-  [UserOrderFields.CREATED_AT]: "created_at",
+  [CarOrderFields.CREATED_AT]: "created_at",
 };
 
-export class KnexUserRepository
-  extends KnexBaseRepository<PostgresUserProps>
-  implements IUserRepository
+export class KnexCarRepository
+  extends KnexBaseRepository<PostgresCarProps>
+  implements ICarRepository
 {
-  TABLE_NAME = "users";
+  TABLE_NAME = "cars";
 
   constructor(cradle: Cradle) {
-    super(cradle.knexClient, "KnexUserRepository");
+    super(cradle.knexClient, "KnexCarRepository");
   }
-  async get(options?: GetUserSelection): Promise<User | undefined> {
+  async get(options?: GetCarSelection): Promise<Car | undefined> {
     const logger = this.logger.child({
       method: "get",
       traceId: getCurrentHub().getTraceId(),
@@ -45,7 +45,7 @@ export class KnexUserRepository
     logger.trace(`BEGIN`);
     logger.debug({ args: { options } });
 
-    let user: User | undefined;
+    let car: Car | undefined;
 
     const query = this.client(this.TABLE_NAME)
       .select()
@@ -54,15 +54,6 @@ export class KnexUserRepository
         if (options?.selection?.id) {
           qb.orWhere({ id: options.selection.id.toString() });
         }
-        if (options?.selection?.firebaseUid) {
-          qb.orWhere({ firebase_uid: options.selection.firebaseUid });
-        }
-        // if (options?.selection?.phoneNumber) {
-        //   qb.where({ phone_number: options.selection.phoneNumber.value });
-        // }
-        if (options?.selection?.username) {
-          qb.orWhere({ username: options.selection.username.value });
-        }
       })
       .first();
 
@@ -70,13 +61,13 @@ export class KnexUserRepository
 
     const row = await query;
 
-    if (row) user = PostgresUserMapper.toDomain(row);
+    if (row) car = PostgresCarMapper.toDomain(row);
 
     logger.trace(`END`);
-    return user;
+    return car;
   }
 
-  async getAll(options?: GetAllUserSelection): Promise<User[]> {
+  async getAll(options?: GetAllCarSelection): Promise<Car[]> {
     const logger = this.logger.child({
       method: "getAll",
       traceId: getCurrentHub().getTraceId(),
@@ -95,18 +86,36 @@ export class KnexUserRepository
             options.selection.ids.map((id) => id.toString())
           );
         }
-        if (options?.selection?.firebaseUids) {
+        if (options?.selection?.brands) {
           qb.whereIn(
-            "id",
-            options.selection.firebaseUids.map((id) => id)
+            "brand",
+            options.selection.brands.map((brand) => brand.value)
           );
         }
-        if (options?.selection?.usernames) {
+        if (options?.selection?.models) {
           qb.whereIn(
-            "username",
-            options.selection.usernames.map((username) => username.value)
+            "model",
+            options.selection.models.map((model) => model.value)
           );
         }
+        if (options?.selection?.fuelTypes) {
+          qb.whereIn(
+            "fuel_type",
+            options.selection.fuelTypes.map((fuelType) => fuelType.value)
+          );
+        }
+        if (options?.selection?.transmissionType) {
+          qb.where(
+            "transmission_type",
+            options.selection.transmissionType.value
+          );
+        }
+
+        if (options?.search) {
+          qb.whereRaw(`brand like '?'`, `%${options.search}%`);
+          qb.orWhereRaw(`model like '?'`, `%${options.search}%`);
+        }
+
         if (options?.selection?.dateFrom) {
           qb.where("created_at", ">=", options.selection.dateFrom);
         }
@@ -114,48 +123,32 @@ export class KnexUserRepository
           qb.where("created_at", "<=", options.selection.dateUntil);
         }
 
-        // pagination
-        if (options?.after && options?.orderBy) {
-          const [field, direction] = options.orderBy;
-          const operator = direction === OrderDirection.DESC ? "<" : ">";
-          const whereRaw = options.after.composite
-            ? `(??, ??) ${operator} (?, ?)`
-            : `?? ${operator} ?`;
-          const bindings = options.after.composite
-            ? [
-                orderFields[field],
-                "id",
-                options.after.composite,
-                options.after.id.toString(),
-              ]
-            : ["id", options.after.id.toString()];
-
-          qb.whereRaw(whereRaw, bindings);
-        }
+        // order by
         if (options?.orderBy) {
           qb.orderBy(
             orderFields[options.orderBy[0]],
             options.orderBy[1] === OrderDirection.ASC ? "asc" : "desc"
           );
         }
+
+        // pagination
         if (options?.limit) {
           qb.limit(options.limit);
+          if (options.page) qb.offset(options.limit * (options.page - 1));
         }
-
-        // default to not return deleted users
-        qb.whereNull("deleted_at");
+        qb.whereNull(`deleted_at`);
       });
 
     logger.info({ query: query.toQuery() });
 
     const rows = await query;
-    const users = rows.map(PostgresUserMapper.toDomain);
+    const cars = rows.map(PostgresCarMapper.toDomain);
 
     logger.trace(`END`);
-    return users;
+    return cars;
   }
 
-  async getCount(options?: GetAllUserSelection): Promise<number> {
+  async getCount(options?: GetAllCarSelection): Promise<number> {
     const logger = this.logger.child({
       method: "getCount",
       traceId: getCurrentHub().getTraceId(),
@@ -174,18 +167,36 @@ export class KnexUserRepository
             options.selection.ids.map((id) => id.toString())
           );
         }
-        if (options?.selection?.firebaseUids) {
+        if (options?.selection?.brands) {
           qb.whereIn(
-            "id",
-            options.selection.firebaseUids.map((id) => id)
+            "brand",
+            options.selection.brands.map((brand) => brand.value)
           );
         }
-        if (options?.selection?.usernames) {
+        if (options?.selection?.models) {
           qb.whereIn(
-            "username",
-            options.selection.usernames.map((username) => username.value)
+            "model",
+            options.selection.models.map((model) => model.value)
           );
         }
+        if (options?.selection?.fuelTypes) {
+          qb.whereIn(
+            "fuel_type",
+            options.selection.fuelTypes.map((fuelType) => fuelType.value)
+          );
+        }
+        if (options?.selection?.transmissionType) {
+          qb.where(
+            "transmission_type",
+            options.selection.transmissionType.value
+          );
+        }
+
+        if (options?.search) {
+          qb.whereRaw(`brand like '?'`, `%${options.search}%`);
+          qb.orWhereRaw(`model like '?'`, `%${options.search}%`);
+        }
+
         if (options?.selection?.dateFrom) {
           qb.where("created_at", ">=", options.selection.dateFrom);
         }
@@ -193,7 +204,7 @@ export class KnexUserRepository
           qb.where("created_at", "<=", options.selection.dateUntil);
         }
 
-        // default to not return deleted users
+        // default to not return deleted Cars
         qb.whereNull("deleted_at");
       })
       .first();
@@ -207,7 +218,7 @@ export class KnexUserRepository
   }
 
   async persist(
-    user: User,
+    car: Car,
     options?: KnexBaseRepositoryOptions | undefined
   ): Promise<void> {
     const logger = this.logger.child({
@@ -216,10 +227,10 @@ export class KnexUserRepository
     });
 
     logger.trace(`BEGIN`);
-    logger.debug({ args: { user, options } });
+    logger.debug({ args: { car, options } });
 
     const query = this.client(this.TABLE_NAME)
-      .insert(PostgresUserMapper.toPersistence(user))
+      .insert(PostgresCarMapper.toPersistence(car))
       .modify((qb) => {
         if (options?.transaction) qb.transacting(options.transaction);
       });
@@ -232,7 +243,7 @@ export class KnexUserRepository
   }
 
   async update(
-    user: User,
+    car: Car,
     options?: KnexBaseRepositoryOptions | undefined
   ): Promise<void> {
     const logger = this.logger.child({
@@ -241,9 +252,9 @@ export class KnexUserRepository
     });
 
     logger.trace(`BEGIN`);
-    logger.debug({ args: { user, options } });
+    logger.debug({ args: { car, options } });
 
-    const { id, ...props } = PostgresUserMapper.toPersistence(user);
+    const { id, ...props } = PostgresCarMapper.toPersistence(car);
 
     const query = this.client(this.TABLE_NAME)
       .where("id", id)
