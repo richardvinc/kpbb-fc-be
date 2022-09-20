@@ -1,3 +1,4 @@
+import { PlateNumber } from "@KPBBFC/car";
 import { UniqueEntityId } from "@KPBBFC/core";
 import { KnexBaseRepositoryOptions } from "@KPBBFC/db/repository/knex";
 
@@ -10,12 +11,16 @@ export enum UserCarOrderFields {
 export interface GetUserCarSelection extends KnexBaseRepositoryOptions {
   selection?: {
     id?: UniqueEntityId;
+    userId?: UniqueEntityId;
+    plateNumber: PlateNumber;
   };
 }
 
 export interface GetAllUserCarSelection extends KnexBaseRepositoryOptions {
   selection?: {
     ids?: UniqueEntityId[];
+    userIds?: UniqueEntityId[];
+    plateNumbers: PlateNumber[];
   };
 }
 

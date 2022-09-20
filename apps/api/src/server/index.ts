@@ -21,6 +21,7 @@ interface ServerOptions {
 }
 
 export interface Identity {
+  firebaseUid?: string;
   id?: string;
   phoneNumber?: string;
   token?: string;

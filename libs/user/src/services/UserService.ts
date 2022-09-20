@@ -8,7 +8,7 @@ import {
   GetUserSelection,
   IUserRepository,
 } from "../repositories/IUserRepository";
-import { IUSerService } from "./IUserService";
+import { IUserService } from "./IUserService";
 
 interface Cradle {
   knexClient: Knex;
@@ -16,7 +16,7 @@ interface Cradle {
   userRepository: IUserRepository;
 }
 
-export class UserService extends BaseService implements IUSerService {
+export class UserService extends BaseService implements IUserService {
   private userRepository: IUserRepository;
 
   private knexClient: Knex;

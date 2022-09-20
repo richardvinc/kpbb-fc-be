@@ -9,7 +9,7 @@ import {
 
 import { UserErrors } from "../../errors";
 import { JSONUserSerializer } from "../../serializers";
-import { IUSerService } from "../../services/IUserService";
+import { IUserService } from "../../services/IUserService";
 import {
   RetrieveUserListCommand,
   RetrieveUserListCommandSchema,
@@ -18,7 +18,7 @@ import {
 } from "./Command";
 
 interface Cradle {
-  userService: IUSerService;
+  userService: IUserService;
 }
 
 export type RetrieveUserListResponse = BaseResponse<
@@ -33,7 +33,7 @@ export class RetrieveUserListUseCase extends UseCase<
 > {
   protected schema = RetrieveUserListCommandSchema;
 
-  private userService: IUSerService;
+  private userService: IUserService;
 
   constructor(cradle: Cradle) {
     super("RetrieveUserListUseCase");

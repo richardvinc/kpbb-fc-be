@@ -33,16 +33,19 @@ import {
 } from "@KPBBFC/core/hub";
 import { BaseApplicationService } from "@KPBBFC/types";
 import {
+  CreateUserCarUseCase,
   CreateUserUseCase,
   IUserCarRepository,
+  IUserCarService,
   IUserFuelConsumptionRepository,
   IUserRepository,
-  IUSerService,
+  IUserService,
   KnexUserCarRepository,
   KnexUserFuelConsumptionRepository,
   KnexUserRepository,
   RetrieveUserListUseCase,
   RetrieveUserUseCase,
+  UserCarService,
   UserService,
 } from "@KPBBFC/user";
 
@@ -64,7 +67,8 @@ export interface AppCradle extends DefaultCradle {
   carSubModelRepository: ICarSubModelRepository;
 
   // services
-  userService: IUSerService;
+  userService: IUserService;
+  userCarService: IUserCarService;
   carService: ICarService;
 }
 
@@ -76,6 +80,9 @@ export interface ApplicationService extends BaseApplicationService {
   createUser: CreateUserUseCase;
   retrieveUser: RetrieveUserUseCase;
   retrieveUserList: RetrieveUserListUseCase;
+
+  // user-car
+  createUserCar: CreateUserCarUseCase;
 
   // car
   retrieveCarList: RetrieveCarListUseCase;
@@ -107,6 +114,7 @@ export async function composeApplication(): Promise<void> {
 
       // services
       userService: asClass(UserService).singleton(),
+      userCarService: asClass(UserCarService).singleton(),
       carService: asClass(CarService).singleton(),
     },
     useCases: {
@@ -117,6 +125,9 @@ export async function composeApplication(): Promise<void> {
       createUser: asClass(CreateUserUseCase).singleton(),
       retrieveUser: asClass(RetrieveUserUseCase).singleton(),
       retrieveUserList: asClass(RetrieveUserListUseCase).singleton(),
+
+      // user-car
+      createUserCar: asClass(CreateUserCarUseCase).singleton(),
 
       // car
       retrieveCarList: asClass(RetrieveCarListUseCase).singleton(),

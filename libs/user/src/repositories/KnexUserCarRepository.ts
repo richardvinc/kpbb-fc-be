@@ -45,6 +45,12 @@ export class KnexUserCarRepository
         if (options?.selection?.id) {
           qb.orWhere({ id: options.selection.id.toString() });
         }
+        if (options?.selection?.userId) {
+          qb.orWhere({ user_id: options.selection.userId.toString() });
+        }
+        if (options?.selection?.plateNumber) {
+          qb.orWhere({ plate_number: options.selection.plateNumber.value });
+        }
       })
       .first();
 
@@ -75,6 +81,18 @@ export class KnexUserCarRepository
           qb.whereIn(
             "id",
             options.selection.ids.map((id) => id.toString())
+          );
+        }
+        if (options?.selection?.userIds) {
+          qb.whereIn(
+            "user_id",
+            options.selection.userIds.map((id) => id.toString())
+          );
+        }
+        if (options?.selection?.plateNumbers) {
+          qb.whereIn(
+            "plate_number",
+            options.selection.plateNumbers.map((pn) => pn.value.toString())
           );
         }
 

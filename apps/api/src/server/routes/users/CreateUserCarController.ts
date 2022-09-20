@@ -1,20 +1,21 @@
 import { RequestError } from "@KPBBFC/core/errors";
 import { getCurrentHub } from "@KPBBFC/core/hub";
 import { KoaBaseController } from "@KPBBFC/core/infrastructure/http/koa";
-import { ICommand } from "@KPBBFC/types";
-import { CreateUserDTO, UserErrors } from "@KPBBFC/user";
+import { ICommandIdentity, ICommandWithIdentity } from "@KPBBFC/types";
+import { CreateUserCarDTO, UserCarErrors } from "@KPBBFC/user";
 
 import { AppContext } from "../..";
 
-interface CreateUserBody {
-  user: {
-    username: string;
+interface CreateUserCarBody {
+  car: {
+    carSubModelId: string;
+    plateNumber: string;
   };
 }
 
-export class CreateUserController extends KoaBaseController<AppContext> {
+export class CreateUserCarController extends KoaBaseController<AppContext> {
   constructor() {
-    super("CreateUserController");
+    super("CreateUserCarController");
   }
 
   async executeImpl(): Promise<void> {
@@ -25,24 +26,30 @@ export class CreateUserController extends KoaBaseController<AppContext> {
 
     logger.trace(`BEGIN`);
 
-    const body = (this.ctx.request as any).body as CreateUserBody;
+    const body = (this.ctx.request as any).body as CreateUserCarBody;
     const identity = this.ctx.identity;
 
-    const cmd: ICommand<Partial<CreateUserDTO>> = {
+    const cmd: ICommandWithIdentity<
+      Partial<CreateUserCarDTO>,
+      Partial<ICommandIdentity>
+    > = {
       dto: {
-        user: {
-          username: body.user.username,
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          firebaseUid: identity.firebaseUid!,
+        car: {
+          carSubModelId: body.car.carSubModelId,
+          plateNumber: body.car.plateNumber,
         },
+      },
+      identity: {
+        id: identity.id,
       },
     };
 
-    const result = await this.ctx.appService.createUser.execute(cmd);
+    const result = await this.ctx.appService.createUserCar.execute(cmd);
     if (result.isLeft()) {
       const error = result.error;
       switch (error.constructor) {
-        case UserErrors.UserAlreadyExistsError:
+        case UserCarErrors.UserCarAlreadyExistsError:
+        case UserCarErrors.UserCarModelNotFoundError:
         case RequestError.InvalidArgumentError:
           this.badRequest(error);
           break;

@@ -18,8 +18,8 @@ interface UserCarProps {
 
   plateNumber: PlateNumber;
 
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
   deletedAt?: Date;
 }
 
@@ -35,9 +35,9 @@ export class UserCar extends AggregateRoot<UserCarProps> {
 
     plateNumber: object().required(),
 
-    createdAt: date().required(),
-    updatedAt: date().required(),
-    deletedAt: date().optional(),
+    createdAt: date().optional(),
+    updatedAt: date().optional(),
+    deletedAt: date().optional().allow(null),
   }).required();
 
   private constructor(props: UserCarProps, id?: UniqueEntityId) {
@@ -77,11 +77,11 @@ export class UserCar extends AggregateRoot<UserCarProps> {
   }
 
   get createdAt(): Date {
-    return this.props.createdAt;
+    return this.props.createdAt!;
   }
 
   get updatedAt(): Date {
-    return this.props.updatedAt;
+    return this.props.updatedAt!;
   }
 
   get deletedAt(): Date | undefined {

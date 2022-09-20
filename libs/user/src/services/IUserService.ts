@@ -1,7 +1,10 @@
 import { User } from "../domains";
-import { GetAllUserSelection, GetUserSelection } from "../repositories/IUserRepository";
+import {
+  GetAllUserSelection,
+  GetUserSelection,
+} from "../repositories/IUserRepository";
 
-export interface IUSerService {
+export interface IUserService {
   get(options?: GetUserSelection): Promise<User | undefined>;
   getAll(options?: GetAllUserSelection): Promise<User[]>;
   getCount(options?: GetAllUserSelection): Promise<number>;

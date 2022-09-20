@@ -10,7 +10,7 @@ import {
 import { User, Username } from "../../domains";
 import { UserErrors } from "../../errors";
 import { JSONUserSerializer } from "../../serializers";
-import { IUSerService } from "../../services/IUserService";
+import { IUserService } from "../../services/IUserService";
 import {
   CreateUserCommand,
   CreateUserCommandSchema,
@@ -19,7 +19,7 @@ import {
 } from "./Command";
 
 interface Cradle {
-  userService: IUSerService;
+  userService: IUserService;
 }
 
 export type CreateUserResponse = BaseResponse<
@@ -34,7 +34,7 @@ export class CreateUserUseCase extends UseCase<
 > {
   protected schema = CreateUserCommandSchema;
 
-  private userService: IUSerService;
+  private userService: IUserService;
 
   constructor(cradle: Cradle) {
     super("CreateUSerUseCase");
@@ -52,12 +52,12 @@ export class CreateUserUseCase extends UseCase<
     logger.trace("BEGIN");
     logger.debug({ request: req });
 
-    const { identity, dto } = req;
+    const { dto } = req;
 
     try {
       const userExists = await this.userService.get({
         selection: {
-          firebaseUid: identity.id,
+          firebaseUid: dto.user.firebaseUid,
           username: dto.user.username
             ? Username.create(dto.user.username)
             : undefined,
@@ -65,7 +65,9 @@ export class CreateUserUseCase extends UseCase<
       });
 
       if (userExists)
-        return left(new UserErrors.UserAlreadyExistsError(identity.id));
+        return left(
+          new UserErrors.UserAlreadyExistsError(dto.user.firebaseUid)
+        );
 
       const user = User.create({
         username: Username.create(dto.user.username),

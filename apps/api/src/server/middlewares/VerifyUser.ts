@@ -1,6 +1,5 @@
 import { DefaultState, Middleware } from "koa";
 
-import { VerifyAuthTokenDTO } from "@KPBBFC/auth";
 import { AuthErrors } from "@KPBBFC/auth/errors";
 import { RequestError } from "@KPBBFC/core/errors";
 import { getCurrentHub } from "@KPBBFC/core/hub";
@@ -9,12 +8,13 @@ import {
   KoaBaseController,
 } from "@KPBBFC/core/infrastructure/http/koa";
 import { ICommand } from "@KPBBFC/types";
+import { RetrieveUserDTO } from "@KPBBFC/user";
 
 import { AppContext } from "../";
 
-class VerifyAuthTokenController extends KoaBaseController<AppContext> {
+class VerifyUserController extends KoaBaseController<AppContext> {
   constructor() {
-    super("VerifyAuthTokenController");
+    super("VerifyUserController");
   }
 
   async executeImpl(): Promise<void> {
@@ -25,13 +25,15 @@ class VerifyAuthTokenController extends KoaBaseController<AppContext> {
 
     logger.trace(`BEGIN`);
 
-    const cmd: ICommand<Partial<VerifyAuthTokenDTO>> = {
+    const cmd: ICommand<Partial<RetrieveUserDTO>> = {
       dto: {
-        token: this.ctx.identity.token,
+        by: {
+          firebaseUid: this.ctx.identity.firebaseUid,
+        },
       },
     };
 
-    const result = await this.ctx.appService.verifyAuthToken.execute(cmd);
+    const result = await this.ctx.appService.retrieveUser.execute(cmd);
 
     if (result.isLeft()) {
       const error = result.error;
@@ -45,14 +47,14 @@ class VerifyAuthTokenController extends KoaBaseController<AppContext> {
       }
     } else {
       const payload = result.value;
-      this.ctx.identity.firebaseUid = payload;
+      this.ctx.identity.id = payload.id;
     }
 
     logger.trace(`END`);
   }
 }
 
-export function VerifyAuthToken(): Middleware<DefaultState, AppContext> {
-  const ctrl = new VerifyAuthTokenController();
+export function VerifyUser(): Middleware<DefaultState, AppContext> {
+  const ctrl = new VerifyUserController();
   return asMiddleware(ctrl);
 }

@@ -1,12 +1,9 @@
 import { array, number, object, string } from "joi";
 
 import { JSONCarSubModelProps } from "@KPBBFC/car/serializers";
-import { ICommandIdentity, ICommandWithIdentity } from "@KPBBFC/types";
+import { ICommand } from "@KPBBFC/types";
 
-export type RetrieveCarListCommand = ICommandWithIdentity<
-  RetrieveCarListDTO,
-  ICommandIdentity
->;
+export type RetrieveCarListCommand = ICommand<RetrieveCarListDTO>;
 
 export type RetrieveCarListPayload = JSONCarSubModelProps[];
 
@@ -36,7 +33,4 @@ export const RetrieveCarListCommandSchema = object<RetrieveCarListCommand>({
       page: number().optional(),
     }).optional(),
   }).optional(),
-  identity: object<ICommandIdentity>({
-    id: string().required(),
-  }),
 });

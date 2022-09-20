@@ -52,7 +52,7 @@ export class RetrieveCarListUseCase extends UseCase<
     logger.trace("BEGIN");
     logger.debug({ request: req });
 
-    const { identity, dto } = req;
+    const { dto } = req;
 
     try {
       const cars = await this.carService.getAllCarSubModel({

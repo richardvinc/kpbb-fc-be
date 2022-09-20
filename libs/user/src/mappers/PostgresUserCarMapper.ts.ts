@@ -45,7 +45,7 @@ export class PostgresUserCarMapper {
       car_model_id: domain.carModelId.toString(),
       car_sub_model_id: domain.carSubModelId.toString(),
 
-      plate_number: domain.plateNumber.toString(),
+      plate_number: domain.plateNumber.value.toString(),
 
       created_at: domain.createdAt ?? new Date(),
       updated_at: domain.updatedAt ?? new Date(),

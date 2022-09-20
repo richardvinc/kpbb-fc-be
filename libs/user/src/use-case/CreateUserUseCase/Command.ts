@@ -1,14 +1,11 @@
 import { number, object, string } from "joi";
 
-import { ICommandIdentity, ICommandWithIdentity } from "@KPBBFC/types";
+import { ICommand } from "@KPBBFC/types";
 import { JSONUserProps } from "@KPBBFC/user";
 
 import { Username } from "../../domains";
 
-export type CreateUserCommand = ICommandWithIdentity<
-  CreateUserDTO,
-  ICommandIdentity
->;
+export type CreateUserCommand = ICommand<CreateUserDTO>;
 
 export type CreateUserPayload = JSONUserProps;
 
@@ -28,7 +25,4 @@ export const CreateUserCommandSchema = object<CreateUserCommand>({
       firebaseUid: string().required(),
     }),
   }).required(),
-  identity: object<ICommandIdentity>({
-    id: string().required(),
-  }),
 });
