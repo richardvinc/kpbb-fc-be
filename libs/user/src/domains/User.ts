@@ -5,7 +5,7 @@ import { MobileNumber } from "@KPBBFC/core/domain/shared";
 import { InternalError } from "@KPBBFC/core/errors";
 import { Guard } from "@KPBBFC/core/logic";
 
-import { Username } from "./Username";
+import { Username } from "./user-properties";
 
 interface UserProps {
   firebaseUid: string;

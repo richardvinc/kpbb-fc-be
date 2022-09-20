@@ -1,3 +1,2 @@
 export * from "./User";
-export * from "./UserGender";
-export * from "./Username";
+export * from "./user-properties";

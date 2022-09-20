@@ -16,7 +16,7 @@ interface Cradle {
   carRepository: ICarRepository;
 }
 
-export class CarSerive extends BaseService implements ICarService {
+export class CarService extends BaseService implements ICarService {
   private carRepository: ICarRepository;
 
   private knexClient: Knex;

@@ -1,11 +1,11 @@
 import * as Knex from "knex";
 
 export async function up(knex: Knex): Promise<void> {
-  return knex.schema.createTable("cars", (table) => {
+  return knex.schema.createTable("car_sub_models", (table) => {
     table.uuid("id").primary();
 
-    table.string("brand").notNullable();
-    table.string("model").notNullable();
+    table.uuid("car_brand_id").references("id").inTable("car_brands");
+    table.uuid("car_model_id").references("id").inTable("car_models");
     table.string("fuel_type").notNullable();
 
     table.string("transmission_type", 2).nullable();
@@ -21,5 +21,5 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
-  return knex.schema.dropTable("cars");
+  return knex.schema.dropTable("car_sub_models");
 }

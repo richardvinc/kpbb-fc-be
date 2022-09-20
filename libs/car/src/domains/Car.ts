@@ -8,14 +8,16 @@ import {
   CarBrand,
   CarDimension,
   CarModel,
+  CarSubModel,
   FuelType,
   TankCapacity,
   TransmissionType,
-} from "./properties";
+} from "./car-properties";
 
 interface CarProps {
   brand: CarBrand;
   model: CarModel;
+  subModel: CarSubModel;
   fuelType: FuelType;
 
   transmissionType?: TransmissionType;
@@ -31,6 +33,7 @@ export class Car extends AggregateRoot<CarProps> {
   private static schema = object<CarProps>({
     brand: object().required(),
     model: object().required(),
+    subModel: object().required(),
     fuelType: object().required(),
 
     transmissionType: object().optional(),
@@ -62,6 +65,10 @@ export class Car extends AggregateRoot<CarProps> {
 
   get model(): CarModel {
     return this.props.model;
+  }
+
+  get subModel(): CarSubModel {
+    return this.props.subModel;
   }
 
   get fuelType(): FuelType {

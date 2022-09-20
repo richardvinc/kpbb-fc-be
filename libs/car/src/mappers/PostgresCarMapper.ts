@@ -10,6 +10,7 @@ import {
   CarBrand,
   CarDimension,
   CarModel,
+  CarSubModel,
   FuelType,
   TankCapacity,
   TransmissionType,
@@ -19,6 +20,7 @@ export interface PostgresCarProps {
   id: string;
   brand: string;
   model: string;
+  sub_model: string;
   fuel_type: string;
 
   transmission_type?: string;
@@ -39,6 +41,7 @@ export class PostgresCarMapper {
       {
         brand: CarBrand.create(props.brand),
         model: CarModel.create(props.model),
+        subModel: CarSubModel.create(props.sub_model),
         fuelType: FuelType.create(props.fuel_type),
 
         tankCapacity: props.tank_capacity
@@ -67,6 +70,7 @@ export class PostgresCarMapper {
 
       brand: domain.brand.value,
       model: domain.model.value,
+      sub_model: domain.subModel.value,
       fuel_type: domain.fuelType.value,
 
       tank_capacity: domain.tankCapacity?.value,

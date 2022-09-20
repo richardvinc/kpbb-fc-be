@@ -1,2 +1,2 @@
 export * from "./Car";
-export * from "./properties";
+export * from "./car-properties";
