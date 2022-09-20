@@ -7,6 +7,9 @@ import {
   UniqueEntityId,
 } from "@KPBBFC/core";
 
+import { User } from "./User";
+import { UserCar } from "./UserCar";
+
 interface UserFuelConsumptionProps {
   userId: UniqueEntityId;
   userCarId: UniqueEntityId;
@@ -16,12 +19,15 @@ interface UserFuelConsumptionProps {
   average: number;
 
   filledAt: Date;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
   deletedAt?: Date;
 }
 
 export class UserFuelConsumption extends AggregateRoot<UserFuelConsumptionProps> {
+  _user?: User;
+  _car?: UserCar;
+
   private static schema = object<UserFuelConsumptionProps>({
     userId: object().required(),
     userCarId: object().required(),
@@ -30,9 +36,9 @@ export class UserFuelConsumption extends AggregateRoot<UserFuelConsumptionProps>
     average: number().required(),
 
     filledAt: date().required(),
-    createdAt: date().required(),
-    updatedAt: date().required(),
-    deletedAt: date().optional(),
+    createdAt: date().optional(),
+    updatedAt: date().optional(),
+    deletedAt: date().optional().allow(null),
   }).required();
 
   private constructor(props: UserFuelConsumptionProps, id?: UniqueEntityId) {
@@ -47,8 +53,16 @@ export class UserFuelConsumption extends AggregateRoot<UserFuelConsumptionProps>
     return this.props.userId;
   }
 
+  get user(): User | undefined {
+    return this._user;
+  }
+
   get userCarId(): UniqueEntityId {
     return this.props.userCarId;
+  }
+
+  get car(): UserCar | undefined {
+    return this._car;
   }
 
   get kmTravelled(): number {
@@ -67,16 +81,34 @@ export class UserFuelConsumption extends AggregateRoot<UserFuelConsumptionProps>
     return this.props.filledAt;
   }
 
-  get createdAt(): Date {
-    return this.props.createdAt;
+  get createdAt(): Date | undefined {
+    return this.props.createdAt!;
   }
 
-  get updatedAt(): Date {
-    return this.props.updatedAt;
+  get updatedAt(): Date | undefined {
+    return this.props.updatedAt!;
   }
 
   get deletedAt(): Date | undefined {
     return this.props.deletedAt;
+  }
+
+  static calculateAverage(
+    fuelFilled: number,
+    kmTravelled: number,
+    kmTravelledPrevious: number | undefined
+  ): number {
+    if (!kmTravelledPrevious) return 0;
+
+    return fuelFilled / (kmTravelled - kmTravelledPrevious);
+  }
+
+  setUser(user: User): void {
+    this._user = user;
+  }
+
+  setCar(car: UserCar): void {
+    this._car = car;
   }
 
   public static create(

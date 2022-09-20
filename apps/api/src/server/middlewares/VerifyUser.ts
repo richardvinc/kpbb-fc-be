@@ -1,6 +1,7 @@
 import { DefaultState, Middleware } from "koa";
 
 import { AuthErrors } from "@KPBBFC/auth/errors";
+import { UniqueEntityId } from "@KPBBFC/core";
 import { RequestError } from "@KPBBFC/core/errors";
 import { getCurrentHub } from "@KPBBFC/core/hub";
 import {
@@ -8,7 +9,7 @@ import {
   KoaBaseController,
 } from "@KPBBFC/core/infrastructure/http/koa";
 import { ICommand } from "@KPBBFC/types";
-import { RetrieveUserDTO } from "@KPBBFC/user";
+import { RetrieveUserDTO, User, Username } from "@KPBBFC/user";
 
 import { AppContext } from "../";
 
@@ -48,6 +49,15 @@ class VerifyUserController extends KoaBaseController<AppContext> {
     } else {
       const payload = result.value;
       this.ctx.identity.id = payload.id;
+      this.ctx.identity.user = User.create(
+        {
+          username: payload.username
+            ? Username.create(payload.username)
+            : undefined,
+          firebaseUid: payload.firebaseUid,
+        },
+        new UniqueEntityId(payload.id)
+      );
     }
 
     logger.trace(`END`);

@@ -2,20 +2,13 @@ import { RequestError } from "@KPBBFC/core/errors";
 import { getCurrentHub } from "@KPBBFC/core/hub";
 import { KoaBaseController } from "@KPBBFC/core/infrastructure/http/koa";
 import { ICommandIdentity, ICommandWithIdentity } from "@KPBBFC/types";
-import { CreateUserCarDTO, UserCarErrors } from "@KPBBFC/user";
+import { RetrieveUserCarListDTO, UserCarErrors } from "@KPBBFC/user";
 
 import { AppContext } from "../..";
 
-interface CreateUserCarBody {
-  car: {
-    carSubModelId: string;
-    plateNumber: string;
-  };
-}
-
-export class CreateUserCarController extends KoaBaseController<AppContext> {
+export class RetrieveUserCarListController extends KoaBaseController<AppContext> {
   constructor() {
-    super("CreateUserCarController");
+    super("RetrieveUserCarListController");
   }
 
   async executeImpl(): Promise<void> {
@@ -26,30 +19,21 @@ export class CreateUserCarController extends KoaBaseController<AppContext> {
 
     logger.trace(`BEGIN`);
 
-    const body = (this.ctx.request as any).body as CreateUserCarBody;
-    const identity = this.ctx.identity;
-
     const cmd: ICommandWithIdentity<
-      Partial<CreateUserCarDTO>,
+      Partial<RetrieveUserCarListDTO>,
       Partial<ICommandIdentity>
     > = {
-      dto: {
-        car: {
-          carSubModelId: body.car.carSubModelId,
-          plateNumber: body.car.plateNumber,
-        },
-      },
+      dto: {},
       identity: {
-        id: identity.id,
+        id: this.ctx.identity.id,
       },
     };
 
-    const result = await this.ctx.appService.createUserCar.execute(cmd);
+    const result = await this.ctx.appService.retrieveUserCarList.execute(cmd);
     if (result.isLeft()) {
       const error = result.error;
       switch (error.constructor) {
-        case UserCarErrors.UserCarAlreadyExistsError:
-        case UserCarErrors.UserCarModelNotFoundError:
+        case UserCarErrors.UserCarNotFoundError:
         case RequestError.InvalidArgumentError:
           this.badRequest(error);
           break;
@@ -58,8 +42,8 @@ export class CreateUserCarController extends KoaBaseController<AppContext> {
           break;
       }
     } else {
-      const userCar = result.value;
-      this.ok({ user: userCar });
+      const userCars = result.value;
+      this.ok({ cars: userCars });
     }
 
     logger.trace(`END`);

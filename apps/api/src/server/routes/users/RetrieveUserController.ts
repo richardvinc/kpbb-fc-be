@@ -10,10 +10,6 @@ interface RetrieveUserParams {
   id: string;
 }
 
-interface RetrieveUserQuery {
-  by: "id" | "firebaseUid" | "username";
-}
-
 export class RetrieveUserController extends KoaBaseController<AppContext> {
   constructor() {
     super("RetrieveUserController");
@@ -28,39 +24,12 @@ export class RetrieveUserController extends KoaBaseController<AppContext> {
     logger.trace(`BEGIN`);
 
     const params = this.ctx.params as RetrieveUserParams;
-    const query = this.ctx.query as Partial<RetrieveUserQuery>;
 
-    let dto: Partial<RetrieveUserDTO> = {};
-    switch (query.by) {
-      case "id":
-        dto = {
-          by: {
-            id: params.id,
-          },
-        };
-        break;
-      case "firebaseUid":
-        dto = {
-          by: {
-            firebaseUid: params.id,
-          },
-        };
-        break;
-      case "username":
-        dto = {
-          by: {
-            username: params.id,
-          },
-        };
-        break;
-      default:
-        dto = {
-          by: {
-            id: params.id,
-          },
-        };
-        break;
-    }
+    const dto: Partial<RetrieveUserDTO> = {
+      by: {
+        id: params.id,
+      },
+    };
 
     const cmd: ICommand<Partial<RetrieveUserDTO>> = {
       dto,

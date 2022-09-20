@@ -4,7 +4,6 @@ import {
   InternalError,
   left,
   right,
-  UniqueEntityId,
   UseCase,
 } from "@KPBBFC/core";
 
@@ -38,7 +37,7 @@ export class RetrieveUserUseCase extends UseCase<
   private userService: IUserService;
 
   constructor(cradle: Cradle) {
-    super("RetrieveUSerUseCase");
+    super("RetrieveUserUseCase");
 
     this.userService = cradle.userService;
   }
@@ -53,12 +52,12 @@ export class RetrieveUserUseCase extends UseCase<
     logger.trace("BEGIN");
     logger.debug({ request: req });
 
-    const { identity, dto } = req;
+    const { dto } = req;
 
     try {
       const user = await this.userService.get({
         selection: {
-          id: dto.by?.id ? new UniqueEntityId(dto.by.id) : undefined,
+          id: dto.by?.id ? dto.by.id : undefined,
           firebaseUid: dto.by?.firebaseUid ? dto.by.firebaseUid : undefined,
           username: dto.by?.username
             ? Username.create(dto.by.username)

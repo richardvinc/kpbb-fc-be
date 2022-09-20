@@ -36,8 +36,8 @@ export class RetrieveUserListController extends KoaBaseController<AppContext> {
           break;
       }
     } else {
-      const user = result.value;
-      this.ok({ user });
+      const users = result.value;
+      this.ok({ user: users });
     }
 
     logger.trace(`END`);

@@ -1,5 +1,6 @@
 import Knex from "knex";
 
+import { ICarSubModelRepository } from "@KPBBFC/car";
 import { BaseService, getCurrentHub } from "@KPBBFC/core";
 
 import { UserCar } from "../domains";
@@ -14,10 +15,12 @@ interface Cradle {
   knexClient: Knex;
 
   userCarRepository: IUserCarRepository;
+  carSubModelRepository: ICarSubModelRepository;
 }
 
 export class UserCarService extends BaseService implements IUserCarService {
   private userCarRepository: IUserCarRepository;
+  private carSubModelRepository: ICarSubModelRepository;
 
   private knexClient: Knex;
 
@@ -26,6 +29,7 @@ export class UserCarService extends BaseService implements IUserCarService {
 
     this.knexClient = cradle.knexClient;
     this.userCarRepository = cradle.userCarRepository;
+    this.carSubModelRepository = cradle.carSubModelRepository;
   }
 
   async get(options?: GetUserCarSelection): Promise<UserCar | undefined> {
@@ -38,9 +42,21 @@ export class UserCarService extends BaseService implements IUserCarService {
     logger.debug({ args: { options } });
 
     try {
-      const response = await this.userCarRepository.get(options);
+      const userCar = await this.userCarRepository.get(options);
+      if (userCar) {
+        // populate cars
+        const carSubModel = await this.carSubModelRepository.get({
+          selection: {
+            id: userCar?.carSubModelId,
+          },
+        });
 
-      return response;
+        if (carSubModel) {
+          userCar.setCar(carSubModel);
+        }
+      }
+
+      return userCar;
     } catch (error) {
       logger.fatal(error as Error);
       throw error;
@@ -57,9 +73,23 @@ export class UserCarService extends BaseService implements IUserCarService {
     logger.debug({ args: { options } });
 
     try {
-      const response = await this.userCarRepository.getAll(options);
+      const userCars = await this.userCarRepository.getAll(options);
+      // populate cars
+      const carSubModels = await this.carSubModelRepository.getAll({
+        selection: {
+          ids: userCars.map((car) => car.carSubModelId),
+        },
+      });
+      for (const car of userCars) {
+        const carSubModel = carSubModels.find((c) =>
+          c.id.equals(car.carSubModelId)
+        );
+        if (carSubModel) {
+          car.setCar(carSubModel);
+        }
+      }
 
-      return response;
+      return userCars;
     } catch (error) {
       logger.fatal(error as Error);
       throw error;

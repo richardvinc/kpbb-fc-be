@@ -10,9 +10,8 @@ export enum UserOrderFields {
 
 export interface GetUserSelection extends KnexBaseRepositoryOptions {
   selection?: {
-    id?: UniqueEntityId;
+    id?: string;
     firebaseUid?: string;
-    // phoneNumber?: MobileNumber;
     username?: Username;
   };
 }
@@ -26,9 +25,8 @@ export interface GetAllUserSelection extends KnexBaseRepositoryOptions {
   };
 
   selection?: {
-    ids?: UniqueEntityId[];
+    ids?: string[];
     firebaseUids?: string[];
-    // phoneNumbers?: MobileNumber[];
     usernames?: Username[];
     dateFrom?: Date;
     dateUntil?: Date;
@@ -37,7 +35,6 @@ export interface GetAllUserSelection extends KnexBaseRepositoryOptions {
   exclude?: {
     ids?: UniqueEntityId[];
     firebaseUids?: string[];
-    // phoneNumbers?: string[];
     usernames?: string[];
   };
 }

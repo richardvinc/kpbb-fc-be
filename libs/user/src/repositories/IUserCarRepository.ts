@@ -12,7 +12,7 @@ export interface GetUserCarSelection extends KnexBaseRepositoryOptions {
   selection?: {
     id?: UniqueEntityId;
     userId?: UniqueEntityId;
-    plateNumber: PlateNumber;
+    plateNumber?: PlateNumber;
   };
 }
 
@@ -20,7 +20,7 @@ export interface GetAllUserCarSelection extends KnexBaseRepositoryOptions {
   selection?: {
     ids?: UniqueEntityId[];
     userIds?: UniqueEntityId[];
-    plateNumbers: PlateNumber[];
+    plateNumbers?: PlateNumber[];
   };
 }
 

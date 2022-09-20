@@ -8,6 +8,8 @@ import { VerifyAuthToken } from "../../middlewares/VerifyAuthToken";
 import { VerifyUser } from "../../middlewares/VerifyUser";
 import { CreateUserCarController } from "./CreateUserCarController";
 import { CreateUserController } from "./CreateUserController";
+import { CreateUserFuelConsumptionController } from "./CreateUserFuelConsumptionController";
+import { RetrieveUserCarListController } from "./RetrieveUserCarListController";
 import { RetrieveUserController } from "./RetrieveUserController";
 import { RetrieveUserListController } from "./RetrieveUserListController";
 
@@ -25,17 +27,27 @@ export function registerUsersRoutes(
     VerifyAuthToken(),
     asMiddleware(new CreateUserController())
   );
-  router.get(
-    "/users/:id",
-    VerifyAuthToken(),
-    asMiddleware(new RetrieveUserController())
-  );
 
-  // user-cars
+  router.get("/users/:path", VerifyAuthToken(), VerifyUser(), (ctx, next) => {
+    switch (ctx.params.path) {
+      case "cars":
+        return asMiddleware(new RetrieveUserCarListController())(ctx, next);
+      default:
+        return asMiddleware(new RetrieveUserController())(ctx, next);
+    }
+  });
+
   router.post(
     "/users/cars",
     VerifyAuthToken(),
     VerifyUser(),
     asMiddleware(new CreateUserCarController())
+  );
+
+  router.post(
+    "/users/cars/:userCarId/fuel",
+    VerifyAuthToken(),
+    VerifyUser(),
+    asMiddleware(new CreateUserFuelConsumptionController())
   );
 }

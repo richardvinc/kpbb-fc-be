@@ -1,6 +1,7 @@
 import Knex from "knex";
 
 import { getCurrentHub } from "@KPBBFC/core";
+import { OrderDirection } from "@KPBBFC/db/repository/BaseRepository";
 import {
   KnexBaseRepository,
   KnexBaseRepositoryOptions,
@@ -15,12 +16,17 @@ import {
   GetAllUserFuelConsumptionSelection,
   GetUserFuelConsumptionSelection,
   IUserFuelConsumptionRepository,
+  UserFuelConsumptionOrderFields,
 } from "./IUserFuelConsumptionRepository";
 
 interface Cradle {
   knexClient: Knex;
 }
 
+const orderFields = {
+  [UserFuelConsumptionOrderFields.CREATED_AT]: "created_at",
+  [UserFuelConsumptionOrderFields.FILLED_AT]: "filled_at",
+};
 export class KnexUserFuelConsumptionRepository
   extends KnexBaseRepository<PostgresUserFuelConsumptionProps>
   implements IUserFuelConsumptionRepository
@@ -84,6 +90,28 @@ export class KnexUserFuelConsumptionRepository
             options.selection.ids.map((id) => id.toString())
           );
         }
+        if (options?.selection?.userCarIds) {
+          qb.whereIn(
+            "user_car_id",
+            options.selection.userCarIds.map((id) => id.toString())
+          );
+        }
+        if (options?.selection?.userIds) {
+          qb.whereIn(
+            "user_id",
+            options.selection.userIds.map((id) => id.toString())
+          );
+        }
+
+        if (options?.orderBy) {
+          qb.orderBy(
+            orderFields[options.orderBy[0]],
+            options.orderBy[1] === OrderDirection.ASC ? "asc" : "desc"
+          );
+        }
+        if (options?.limit) {
+          qb.limit(options.limit);
+        }
 
         qb.whereNull(`deleted_at`);
       });
@@ -116,6 +144,18 @@ export class KnexUserFuelConsumptionRepository
           qb.whereIn(
             "id",
             options.selection.ids.map((id) => id.toString())
+          );
+        }
+        if (options?.selection?.userCarIds) {
+          qb.whereIn(
+            "user_car_id",
+            options.selection.userCarIds.map((id) => id.toString())
+          );
+        }
+        if (options?.selection?.userIds) {
+          qb.whereIn(
+            "user_id",
+            options.selection.userIds.map((id) => id.toString())
           );
         }
 
@@ -157,32 +197,32 @@ export class KnexUserFuelConsumptionRepository
     logger.trace(`END`);
   }
 
-  async update(
-    car: UserFuelConsumption,
-    options?: KnexBaseRepositoryOptions | undefined
-  ): Promise<void> {
-    const logger = this.logger.child({
-      method: "update",
-      traceId: getCurrentHub().getTraceId(),
-    });
+  // async update(
+  //   car: UserFuelConsumption,
+  //   options?: KnexBaseRepositoryOptions | undefined
+  // ): Promise<void> {
+  //   const logger = this.logger.child({
+  //     method: "update",
+  //     traceId: getCurrentHub().getTraceId(),
+  //   });
 
-    logger.trace(`BEGIN`);
-    logger.debug({ args: { car, options } });
+  //   logger.trace(`BEGIN`);
+  //   logger.debug({ args: { car, options } });
 
-    const { id, ...props } =
-      PostgresUserFuelConsumptionMapper.toPersistence(car);
+  //   const { id, ...props } =
+  //     PostgresUserFuelConsumptionMapper.toPersistence(car);
 
-    const query = this.client(this.TABLE_NAME)
-      .where("id", id)
-      .update(props)
-      .modify((qb) => {
-        if (options?.transaction) qb.transacting(options.transaction);
-      });
+  //   const query = this.client(this.TABLE_NAME)
+  //     .where("id", id)
+  //     .update(props)
+  //     .modify((qb) => {
+  //       if (options?.transaction) qb.transacting(options.transaction);
+  //     });
 
-    logger.info({ query: query.toQuery() });
+  //   logger.info({ query: query.toQuery() });
 
-    await query;
+  //   await query;
 
-    logger.trace(`END`);
-  }
+  //   logger.trace(`END`);
+  // }
 }
