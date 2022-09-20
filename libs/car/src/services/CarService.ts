@@ -2,22 +2,22 @@ import Knex from "knex";
 
 import { BaseService, getCurrentHub } from "@KPBBFC/core";
 
-import { Car } from "../domains";
+import { CarSubModel } from "../domains";
 import {
-  GetAllCarSelection,
-  GetCarSelection,
-  ICarRepository,
-} from "../repositories/ICarRepository";
+  GetAllCarSubModelSelection,
+  GetCarSubModelSelection,
+  ICarSubModelRepository,
+} from "../repositories";
 import { ICarService } from "./ICarService";
 
 interface Cradle {
   knexClient: Knex;
 
-  carRepository: ICarRepository;
+  carSubModelRepository: ICarSubModelRepository;
 }
 
 export class CarService extends BaseService implements ICarService {
-  private carRepository: ICarRepository;
+  private carSubModelRepository: ICarSubModelRepository;
 
   private knexClient: Knex;
 
@@ -25,12 +25,14 @@ export class CarService extends BaseService implements ICarService {
     super("CarService");
 
     this.knexClient = cradle.knexClient;
-    this.carRepository = cradle.carRepository;
+    this.carSubModelRepository = cradle.carSubModelRepository;
   }
 
-  async get(options?: GetCarSelection): Promise<Car | undefined> {
+  async getCarSubModel(
+    options?: GetCarSubModelSelection | undefined
+  ): Promise<CarSubModel | undefined> {
     const logger = this.logger.child({
-      methodName: "get",
+      methodName: "getCarSubModel",
       traceId: getCurrentHub().getTraceId(),
     });
 
@@ -38,7 +40,7 @@ export class CarService extends BaseService implements ICarService {
     logger.debug({ args: { options } });
 
     try {
-      const response = await this.carRepository.get(options);
+      const response = await this.carSubModelRepository.get(options);
 
       return response;
     } catch (error) {
@@ -47,9 +49,11 @@ export class CarService extends BaseService implements ICarService {
     }
   }
 
-  async getAll(options?: GetAllCarSelection): Promise<Car[]> {
+  async getAllCarSubModel(
+    options?: GetAllCarSubModelSelection | undefined
+  ): Promise<CarSubModel[]> {
     const logger = this.logger.child({
-      methodName: "getAll",
+      methodName: "getAllCarSubModel",
       traceId: getCurrentHub().getTraceId(),
     });
 
@@ -57,7 +61,7 @@ export class CarService extends BaseService implements ICarService {
     logger.debug({ args: { options } });
 
     try {
-      const response = await this.carRepository.getAll(options);
+      const response = await this.carSubModelRepository.getAll(options);
 
       return response;
     } catch (error) {
@@ -66,9 +70,11 @@ export class CarService extends BaseService implements ICarService {
     }
   }
 
-  async getCount(options?: GetAllCarSelection): Promise<number> {
+  async getCountCarSubModel(
+    options?: GetAllCarSubModelSelection | undefined
+  ): Promise<number> {
     const logger = this.logger.child({
-      methodName: "getCount",
+      methodName: "getCountCarSubModel",
       traceId: getCurrentHub().getTraceId(),
     });
 
@@ -76,7 +82,7 @@ export class CarService extends BaseService implements ICarService {
     logger.debug({ args: { options } });
 
     try {
-      const response = await this.carRepository.getCount(options);
+      const response = await this.carSubModelRepository.getCount(options);
 
       return response;
     } catch (error) {
@@ -85,9 +91,9 @@ export class CarService extends BaseService implements ICarService {
     }
   }
 
-  async createCar(car: Car): Promise<void> {
+  async createCarSubModel(car: CarSubModel): Promise<void> {
     const logger = this.logger.child({
-      methodName: "createCar",
+      methodName: "createCarSubModel",
       traceId: getCurrentHub().getTraceId(),
     });
 
@@ -97,7 +103,7 @@ export class CarService extends BaseService implements ICarService {
     const transaction = await this.knexClient.transaction();
 
     try {
-      await this.carRepository.persist(car, { transaction });
+      await this.carSubModelRepository.persist(car, { transaction });
 
       transaction.commit();
     } catch (error) {
@@ -107,9 +113,9 @@ export class CarService extends BaseService implements ICarService {
     }
   }
 
-  async updateCar(car: Car): Promise<void> {
+  async updateCarSubModel(car: CarSubModel): Promise<void> {
     const logger = this.logger.child({
-      methodName: "updateCar",
+      methodName: "updateCarSubModel",
       traceId: getCurrentHub().getTraceId(),
     });
 
@@ -119,7 +125,7 @@ export class CarService extends BaseService implements ICarService {
     const transaction = await this.knexClient.transaction();
 
     try {
-      await this.carRepository.update(car, { transaction });
+      await this.carSubModelRepository.update(car, { transaction });
 
       transaction.commit();
     } catch (error) {

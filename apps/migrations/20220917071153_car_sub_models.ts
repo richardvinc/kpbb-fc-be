@@ -6,6 +6,8 @@ export async function up(knex: Knex): Promise<void> {
 
     table.uuid("car_brand_id").references("id").inTable("car_brands");
     table.uuid("car_model_id").references("id").inTable("car_models");
+    table.string("name").notNullable();
+    table.string("printed_name").nullable();
     table.string("fuel_type").notNullable();
 
     table.string("transmission_type", 2).nullable();

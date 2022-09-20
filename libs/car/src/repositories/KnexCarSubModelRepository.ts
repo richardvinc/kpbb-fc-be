@@ -7,36 +7,38 @@ import {
   KnexBaseRepositoryOptions,
 } from "@KPBBFC/db/repository/knex";
 
-import { Car } from "../domains";
+import { CarSubModel } from "../domains";
 import {
-  PostgresCarMapper,
-  PostgresCarProps,
-} from "../mappers/PostgresCarMapper";
+  PostgresCarSubModelMapper,
+  PostgresCarSubModelProps,
+} from "../mappers";
 import {
-  CarOrderFields,
-  GetAllCarSelection,
-  GetCarSelection,
-  ICarRepository,
-} from "./ICarRepository";
+  CarSubModelOrderFields,
+  GetAllCarSubModelSelection,
+  GetCarSubModelSelection,
+  ICarSubModelRepository,
+} from "./ICarSubModelRepository";
 
 interface Cradle {
   knexClient: Knex;
 }
 
 const orderFields = {
-  [CarOrderFields.CREATED_AT]: "created_at",
+  [CarSubModelOrderFields.CREATED_AT]: "created_at",
 };
 
-export class KnexCarRepository
-  extends KnexBaseRepository<PostgresCarProps>
-  implements ICarRepository
+export class KnexCarSubModelRepository
+  extends KnexBaseRepository<PostgresCarSubModelProps>
+  implements ICarSubModelRepository
 {
-  TABLE_NAME = "cars";
+  TABLE_NAME = "car_sub_models";
 
   constructor(cradle: Cradle) {
-    super(cradle.knexClient, "KnexCarRepository");
+    super(cradle.knexClient, "KnexCarSubModelRepository");
   }
-  async get(options?: GetCarSelection): Promise<Car | undefined> {
+  async get(
+    options?: GetCarSubModelSelection
+  ): Promise<CarSubModel | undefined> {
     const logger = this.logger.child({
       method: "get",
       traceId: getCurrentHub().getTraceId(),
@@ -45,7 +47,7 @@ export class KnexCarRepository
     logger.trace(`BEGIN`);
     logger.debug({ args: { options } });
 
-    let car: Car | undefined;
+    let car: CarSubModel | undefined;
 
     const query = this.client(this.TABLE_NAME)
       .select()
@@ -61,13 +63,13 @@ export class KnexCarRepository
 
     const row = await query;
 
-    if (row) car = PostgresCarMapper.toDomain(row);
+    if (row) car = PostgresCarSubModelMapper.toDomain(row);
 
     logger.trace(`END`);
     return car;
   }
 
-  async getAll(options?: GetAllCarSelection): Promise<Car[]> {
+  async getAll(options?: GetAllCarSubModelSelection): Promise<CarSubModel[]> {
     const logger = this.logger.child({
       method: "getAll",
       traceId: getCurrentHub().getTraceId(),
@@ -86,16 +88,16 @@ export class KnexCarRepository
             options.selection.ids.map((id) => id.toString())
           );
         }
-        if (options?.selection?.brands) {
+        if (options?.selection?.brandIds) {
           qb.whereIn(
-            "brand",
-            options.selection.brands.map((brand) => brand.value)
+            "car_brand_id",
+            options.selection.brandIds.map((id) => id.toString())
           );
         }
-        if (options?.selection?.models) {
+        if (options?.selection?.modelIds) {
           qb.whereIn(
-            "model",
-            options.selection.models.map((model) => model.value)
+            "car_model_id",
+            options.selection.modelIds.map((id) => id.toString())
           );
         }
         if (options?.selection?.fuelTypes) {
@@ -112,8 +114,10 @@ export class KnexCarRepository
         }
 
         if (options?.search) {
-          qb.whereRaw(`brand like '?'`, `%${options.search}%`);
-          qb.orWhereRaw(`model like '?'`, `%${options.search}%`);
+          qb.whereRaw(
+            `lower(printed_name) like '?'`,
+            `%${options.search.toLowerCase()}%`
+          );
         }
 
         if (options?.selection?.dateFrom) {
@@ -142,13 +146,13 @@ export class KnexCarRepository
     logger.info({ query: query.toQuery() });
 
     const rows = await query;
-    const cars = rows.map(PostgresCarMapper.toDomain);
+    const cars = rows.map(PostgresCarSubModelMapper.toDomain);
 
     logger.trace(`END`);
     return cars;
   }
 
-  async getCount(options?: GetAllCarSelection): Promise<number> {
+  async getCount(options?: GetAllCarSubModelSelection): Promise<number> {
     const logger = this.logger.child({
       method: "getCount",
       traceId: getCurrentHub().getTraceId(),
@@ -167,16 +171,16 @@ export class KnexCarRepository
             options.selection.ids.map((id) => id.toString())
           );
         }
-        if (options?.selection?.brands) {
+        if (options?.selection?.brandIds) {
           qb.whereIn(
-            "brand",
-            options.selection.brands.map((brand) => brand.value)
+            "car_brand_id",
+            options.selection.brandIds.map((id) => id.toString())
           );
         }
-        if (options?.selection?.models) {
+        if (options?.selection?.modelIds) {
           qb.whereIn(
-            "model",
-            options.selection.models.map((model) => model.value)
+            "car_model_id",
+            options.selection.modelIds.map((id) => id.toString())
           );
         }
         if (options?.selection?.fuelTypes) {
@@ -193,8 +197,10 @@ export class KnexCarRepository
         }
 
         if (options?.search) {
-          qb.whereRaw(`brand like '?'`, `%${options.search}%`);
-          qb.orWhereRaw(`model like '?'`, `%${options.search}%`);
+          qb.whereRaw(
+            `lower(printed_name) like '?'`,
+            `%${options.search.toLowerCase()}%`
+          );
         }
 
         if (options?.selection?.dateFrom) {
@@ -218,7 +224,7 @@ export class KnexCarRepository
   }
 
   async persist(
-    car: Car,
+    car: CarSubModel,
     options?: KnexBaseRepositoryOptions | undefined
   ): Promise<void> {
     const logger = this.logger.child({
@@ -230,7 +236,7 @@ export class KnexCarRepository
     logger.debug({ args: { car, options } });
 
     const query = this.client(this.TABLE_NAME)
-      .insert(PostgresCarMapper.toPersistence(car))
+      .insert(PostgresCarSubModelMapper.toPersistence(car))
       .modify((qb) => {
         if (options?.transaction) qb.transacting(options.transaction);
       });
@@ -243,7 +249,7 @@ export class KnexCarRepository
   }
 
   async update(
-    car: Car,
+    car: CarSubModel,
     options?: KnexBaseRepositoryOptions | undefined
   ): Promise<void> {
     const logger = this.logger.child({
@@ -254,7 +260,7 @@ export class KnexCarRepository
     logger.trace(`BEGIN`);
     logger.debug({ args: { car, options } });
 
-    const { id, ...props } = PostgresCarMapper.toPersistence(car);
+    const { id, ...props } = PostgresCarSubModelMapper.toPersistence(car);
 
     const query = this.client(this.TABLE_NAME)
       .where("id", id)

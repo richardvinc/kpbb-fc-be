@@ -4,28 +4,28 @@ import { ValueObject } from "@KPBBFC/core/domain";
 import { InternalError } from "@KPBBFC/core/errors";
 import { Guard } from "@KPBBFC/core/logic";
 
-export interface CarModelProps {
+export interface PlateNumberProps {
   value: string;
 }
 
-export class CarModel extends ValueObject<CarModelProps> {
+export class PlateNumber extends ValueObject<PlateNumberProps> {
   public static SCHEMA = string().required().min(4).max(100);
 
   get value(): string {
     return this.props.value;
   }
 
-  private constructor(props: CarModelProps) {
+  private constructor(props: PlateNumberProps) {
     super(props);
   }
 
-  public static create(value: string): CarModel {
-    const guardResult = Guard.against<CarModelProps>(this.SCHEMA, value);
+  public static create(value: string): PlateNumber {
+    const guardResult = Guard.against<PlateNumberProps>(this.SCHEMA, value);
 
     if (!guardResult.succeeded) {
-      throw new InternalError.DomainError("CarModel", guardResult.message);
+      throw new InternalError.DomainError("PlateNumber", guardResult.message);
     } else {
-      return new CarModel({ value });
+      return new PlateNumber({ value });
     }
   }
 }

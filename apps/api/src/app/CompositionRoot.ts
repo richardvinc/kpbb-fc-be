@@ -15,12 +15,6 @@ import {
   VerifyAuthTokenUseCase,
 } from "@KPBBFC/auth";
 import {
-  CarService,
-  ICarRepository,
-  ICarService,
-  KnexCarRepository,
-} from "@KPBBFC/car";
-import {
   ConfigSourceOptions,
   DefaultCradle,
   getCurrentHub,
@@ -48,11 +42,9 @@ export interface AppCradle extends DefaultCradle {
 
   // repositories
   userRepository: IUserRepository;
-  carRepository: ICarRepository;
 
   // services
   userService: IUSerService;
-  carService: ICarService;
 }
 
 export interface ApplicationService extends BaseApplicationService {
@@ -81,11 +73,9 @@ export async function composeApplication(): Promise<void> {
 
       // repositories
       userRepository: asClass(KnexUserRepository).singleton(),
-      carRepository: asClass(KnexCarRepository).singleton(),
 
       // services
       userService: asClass(UserSerive).singleton(),
-      carService: asClass(CarService).singleton(),
     },
     useCases: {
       // auth

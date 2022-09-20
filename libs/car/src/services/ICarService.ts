@@ -1,14 +1,35 @@
-import { Car } from "../domains";
+import { CarSubModel } from "../domains";
 import {
-  GetAllCarSelection,
-  GetCarSelection,
-} from "../repositories/ICarRepository";
+  GetAllCarSubModelSelection,
+  GetCarSubModelSelection,
+} from "../repositories/ICarSubModelRepository";
 
 export interface ICarService {
-  get(options?: GetCarSelection): Promise<Car | undefined>;
-  getAll(options?: GetAllCarSelection): Promise<Car[]>;
-  getCount(options?: GetAllCarSelection): Promise<number>;
+  // car brand
+  // getCarBrand(
+  //   options?: GetCarBrandSelection
+  // ): Promise<CarBrand | undefined>;
+  // getAllCarBrand(
+  //   options?: GetAllCarBrandSelection
+  // ): Promise<CarBrand[]>;
 
-  createCar(car: Car): Promise<void>;
-  updateCar(car: Car): Promise<void>;
+  // // car model
+  // getCarModel(
+  //   options?: GetCarModelSelection
+  // ): Promise<CarModel | undefined>;
+  // getAllCarModel(
+  //   options?: GetAllCarModelSelection
+  // ): Promise<CarModel[]>;
+
+  // car sub model
+  getCarSubModel(
+    options?: GetCarSubModelSelection
+  ): Promise<CarSubModel | undefined>;
+  getAllCarSubModel(
+    options?: GetAllCarSubModelSelection
+  ): Promise<CarSubModel[]>;
+  getCountCarSubModel(options?: GetAllCarSubModelSelection): Promise<number>;
+
+  createCarSubModel(car: CarSubModel): Promise<void>;
+  updateCarSubModel(car: CarSubModel): Promise<void>;
 }

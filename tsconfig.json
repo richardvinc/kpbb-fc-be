@@ -9,12 +9,14 @@
       "@KPBBFC/types": ["libs/types/src"],
       "@KPBBFC/user": ["libs/user/src"],
       "@KPBBFC/car": ["libs/car/src"],
+      "@KPBBFC/fuelConsumption": ["libs/fuelConsumption/src"],
 
       "@KPBBFC/auth/*": ["libs/auth/src/*"],
       "@KPBBFC/core/*": ["libs/core/src/*"],
       "@KPBBFC/db/*": ["libs/db/src/*"],
       "@KPBBFC/types/*": ["libs/types/src/*"],
-      "@KPBBFC/car/*": ["libs/car/src/*"]
+      "@KPBBFC/car/*": ["libs/car/src/*"],
+      "@KPBBFC/fuelConsumption/*": ["libs/fuelConsumption/src/*"]
     },
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
