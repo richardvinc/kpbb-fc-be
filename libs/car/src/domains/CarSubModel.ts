@@ -23,7 +23,7 @@ interface CarSubModelProps {
   model?: CarModel;
 
   fuelType: FuelType;
-  transmissionType?: TransmissionType;
+  transmissionType: TransmissionType;
   tankCapacity?: TankCapacity;
   dimension?: CarDimension;
 
@@ -44,7 +44,7 @@ export class CarSubModel extends AggregateRoot<CarSubModelProps> {
     model: object().optional(),
 
     fuelType: object().required(),
-    transmissionType: object().optional(),
+    transmissionType: object().required(),
     tankCapacity: object().optional(),
     dimension: object().optional(),
 
@@ -89,7 +89,7 @@ export class CarSubModel extends AggregateRoot<CarSubModelProps> {
     return this.props.fuelType;
   }
 
-  get transmissionType(): TransmissionType | undefined {
+  get transmissionType(): TransmissionType {
     return this.props.transmissionType;
   }
 

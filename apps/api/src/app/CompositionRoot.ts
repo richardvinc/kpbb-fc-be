@@ -15,6 +15,17 @@ import {
   VerifyAuthTokenUseCase,
 } from "@KPBBFC/auth";
 import {
+  CarService,
+  ICarBrandRepository,
+  ICarModelRepository,
+  ICarService,
+  ICarSubModelRepository,
+  KnexCarBrandRepository,
+  KnexCarModelRepository,
+  KnexCarSubModelRepository,
+  RetrieveCarListUseCase,
+} from "@KPBBFC/car";
+import {
   ConfigSourceOptions,
   DefaultCradle,
   getCurrentHub,
@@ -23,12 +34,16 @@ import {
 import { BaseApplicationService } from "@KPBBFC/types";
 import {
   CreateUserUseCase,
+  IUserCarRepository,
+  IUserFuelConsumptionRepository,
   IUserRepository,
   IUSerService,
+  KnexUserCarRepository,
+  KnexUserFuelConsumptionRepository,
   KnexUserRepository,
   RetrieveUserListUseCase,
   RetrieveUserUseCase,
-  UserSerive,
+  UserService,
 } from "@KPBBFC/user";
 
 export interface AppCradle extends DefaultCradle {
@@ -42,9 +57,15 @@ export interface AppCradle extends DefaultCradle {
 
   // repositories
   userRepository: IUserRepository;
+  userCarRepository: IUserCarRepository;
+  userFuelConsumptionRepository: IUserFuelConsumptionRepository;
+  carBrandRepository: ICarBrandRepository;
+  carModelRepository: ICarModelRepository;
+  carSubModelRepository: ICarSubModelRepository;
 
   // services
   userService: IUSerService;
+  carService: ICarService;
 }
 
 export interface ApplicationService extends BaseApplicationService {
@@ -55,6 +76,9 @@ export interface ApplicationService extends BaseApplicationService {
   createUser: CreateUserUseCase;
   retrieveUser: RetrieveUserUseCase;
   retrieveUserList: RetrieveUserListUseCase;
+
+  // car
+  retrieveCarList: RetrieveCarListUseCase;
 }
 
 export async function composeApplication(): Promise<void> {
@@ -73,9 +97,17 @@ export async function composeApplication(): Promise<void> {
 
       // repositories
       userRepository: asClass(KnexUserRepository).singleton(),
+      userCarRepository: asClass(KnexUserCarRepository).singleton(),
+      userFuelConsumptionRepository: asClass(
+        KnexUserFuelConsumptionRepository
+      ).singleton(),
+      carBrandRepository: asClass(KnexCarBrandRepository).singleton(),
+      carModelRepository: asClass(KnexCarModelRepository).singleton(),
+      carSubModelRepository: asClass(KnexCarSubModelRepository).singleton(),
 
       // services
-      userService: asClass(UserSerive).singleton(),
+      userService: asClass(UserService).singleton(),
+      carService: asClass(CarService).singleton(),
     },
     useCases: {
       // auth
@@ -85,6 +117,9 @@ export async function composeApplication(): Promise<void> {
       createUser: asClass(CreateUserUseCase).singleton(),
       retrieveUser: asClass(RetrieveUserUseCase).singleton(),
       retrieveUserList: asClass(RetrieveUserListUseCase).singleton(),
+
+      // car
+      retrieveCarList: asClass(RetrieveCarListUseCase).singleton(),
     },
   });
 }

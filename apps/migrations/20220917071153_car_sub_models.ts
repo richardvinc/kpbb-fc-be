@@ -10,7 +10,7 @@ export async function up(knex: Knex): Promise<void> {
     table.string("printed_name").nullable();
     table.string("fuel_type").notNullable();
 
-    table.string("transmission_type", 2).nullable();
+    table.string("transmission_type", 5).nullable();
     table.integer("tank_capacity").defaultTo(0);
     table.integer("dimension_l").defaultTo(0);
     table.integer("dimension_w").defaultTo(0);

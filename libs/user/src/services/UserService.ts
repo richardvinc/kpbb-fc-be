@@ -16,7 +16,7 @@ interface Cradle {
   userRepository: IUserRepository;
 }
 
-export class UserSerive extends BaseService implements IUSerService {
+export class UserService extends BaseService implements IUSerService {
   private userRepository: IUserRepository;
 
   private knexClient: Knex;

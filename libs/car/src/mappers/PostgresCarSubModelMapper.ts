@@ -26,7 +26,7 @@ export interface PostgresCarSubModelProps {
   model?: CarModel;
 
   fuel_type: string;
-  transmission_type?: string;
+  transmission_type: string;
   tank_capacity?: number;
   dimension_l: number;
   dimension_w: number;
@@ -52,9 +52,7 @@ export class PostgresCarSubModelMapper {
         model: props.model,
 
         fuelType: FuelType.create(props.fuel_type),
-        transmissionType: props.transmission_type
-          ? TransmissionType.create(props.transmission_type)
-          : undefined,
+        transmissionType: TransmissionType.create(props.transmission_type),
         tankCapacity: props.tank_capacity
           ? TankCapacity.create(props.tank_capacity)
           : undefined,
@@ -81,7 +79,7 @@ export class PostgresCarSubModelMapper {
       car_brand_id: domain.brandId.toString(),
       car_model_id: domain.modelId.toString(),
       fuel_type: domain.fuelType.value,
-      transmission_type: domain.transmissionType?.value,
+      transmission_type: domain.transmissionType.value,
       tank_capacity: domain.tankCapacity?.value,
 
       dimension_l: domain.dimension ? domain.dimension.length.value : 0,
