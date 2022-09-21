@@ -10,7 +10,7 @@ export async function up(knex: Knex): Promise<void> {
     table.integer("km_traveled").defaultTo(0).comment("Km traveled in km");
     table.integer("fuel_filled").defaultTo(0).comment("Fuel filled in liters");
     table
-      .integer("average")
+      .decimal("average")
       .defaultTo(0)
       .comment("Average fuel consumption in km/l");
     table.timestamp("filled_at").defaultTo(knex.fn.now());

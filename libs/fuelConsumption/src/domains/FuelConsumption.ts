@@ -1,4 +1,4 @@
-import { number, object } from "joi";
+import { date, number, object } from "joi";
 
 import { ValueObject } from "@KPBBFC/core/domain";
 import { InternalError } from "@KPBBFC/core/errors";
@@ -8,6 +8,7 @@ export interface FuelConsumptionProps {
   kmTravelled: number;
   fuelFilled: number;
   average: number;
+  filledAt: Date;
 }
 
 export class FuelConsumption extends ValueObject<FuelConsumptionProps> {
@@ -15,6 +16,7 @@ export class FuelConsumption extends ValueObject<FuelConsumptionProps> {
     kmTravelled: number().required().min(0),
     fuelFilled: number().required().min(0),
     average: number().required().min(0),
+    filledAt: date().required(),
   }).required();
 
   get kmTravelled(): number {
@@ -27,6 +29,20 @@ export class FuelConsumption extends ValueObject<FuelConsumptionProps> {
 
   get average(): number {
     return this.props.average;
+  }
+
+  get filledAt(): Date {
+    return this.props.filledAt;
+  }
+
+  static calculateAverage(
+    fuelFilled: number,
+    kmTravelled: number,
+    kmTravelledPrevious: number | undefined
+  ): number {
+    if (!kmTravelledPrevious) return 0;
+
+    return fuelFilled / (kmTravelled - kmTravelledPrevious);
   }
 
   private constructor(props: FuelConsumptionProps) {

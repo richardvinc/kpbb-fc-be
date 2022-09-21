@@ -1,5 +1,4 @@
 import {
-  BaseError,
   BaseResponse,
   getCurrentHub,
   InternalError,
@@ -9,6 +8,10 @@ import {
   UseCase,
 } from "@KPBBFC/core";
 import { OrderDirection } from "@KPBBFC/db/repository/BaseRepository";
+import {
+  FuelConsumption,
+  FuelConsumptionErrors,
+} from "@KPBBFC/fuelConsumption";
 
 import { UserFuelConsumption } from "../../domains";
 import { UserFuelConsumptionOrderFields } from "../../repositories";
@@ -26,7 +29,7 @@ interface Cradle {
 }
 
 export type CreateUserFuelConsumptionResponse = BaseResponse<
-  BaseError,
+  FuelConsumptionErrors.FuelConsumptionKmTravelledEqualOrLessThanPrevious,
   CreateUserFuelConsumptionPayload
 >;
 
@@ -75,17 +78,30 @@ export class CreateUserFuelConsumptionUseCase extends UseCase<
         })
       )[0]; // can be undefined
 
+      if (lastUserFuelConsumption) {
+        if (
+          dto.fuelConsumption.kmTravelled <=
+          lastUserFuelConsumption.fuelConsumption.kmTravelled
+        ) {
+          return left(
+            new FuelConsumptionErrors.FuelConsumptionKmTravelledEqualOrLessThanPrevious()
+          );
+        }
+      }
+
       const userFuelConsumption = UserFuelConsumption.create({
         userId,
         userCarId: new UniqueEntityId(dto.fuelConsumption.carId),
-        filledAt: dto.fuelConsumption.filledAt,
-        kmTravelled: dto.fuelConsumption.kmTravelled,
-        fuelFilled: dto.fuelConsumption.fuelFilled,
-        average: UserFuelConsumption.calculateAverage(
-          dto.fuelConsumption.fuelFilled,
-          dto.fuelConsumption.kmTravelled,
-          lastUserFuelConsumption?.kmTravelled
-        ),
+        fuelConsumption: FuelConsumption.create({
+          kmTravelled: dto.fuelConsumption.kmTravelled,
+          fuelFilled: dto.fuelConsumption.fuelFilled,
+          average: FuelConsumption.calculateAverage(
+            dto.fuelConsumption.fuelFilled,
+            dto.fuelConsumption.kmTravelled,
+            lastUserFuelConsumption?.fuelConsumption.kmTravelled
+          ),
+          filledAt: dto.fuelConsumption.filledAt,
+        }),
       });
 
       await this.userFuelConsumptionService.persist(userFuelConsumption);

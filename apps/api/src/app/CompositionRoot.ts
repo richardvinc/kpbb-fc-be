@@ -46,6 +46,7 @@ import {
   KnexUserFuelConsumptionRepository,
   KnexUserRepository,
   RetrieveUserCarListUseCase,
+  RetrieveUserFuelConsumptionListByCarUseCase,
   RetrieveUserListUseCase,
   RetrieveUserUseCase,
   UserCarService,
@@ -92,6 +93,7 @@ export interface ApplicationService extends BaseApplicationService {
 
   // user fuel consumption
   createUserFuelConsumption: CreateUserFuelConsumptionUseCase;
+  retrieveUserFuelConsumptionListByCar: RetrieveUserFuelConsumptionListByCarUseCase;
 
   // car
   retrieveCarList: RetrieveCarListUseCase;
@@ -141,6 +143,9 @@ export async function composeApplication(): Promise<void> {
       // user-car
       createUserCar: asClass(CreateUserCarUseCase).singleton(),
       retrieveUserCarList: asClass(RetrieveUserCarListUseCase).singleton(),
+      retrieveUserFuelConsumptionListByCar: asClass(
+        RetrieveUserFuelConsumptionListByCarUseCase
+      ).singleton(),
 
       // user-fuel-consumption
       createUserFuelConsumption: asClass(

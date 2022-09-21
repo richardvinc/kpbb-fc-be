@@ -31,10 +31,10 @@ export class JSONUserFuelConsumptionSerializer {
     return {
       id: domain.id.toString(),
       userId: domain.userId.toString(),
-      km_traveled: domain.kmTravelled,
-      fuel_filled: domain.fuelFilled,
-      average: domain.average,
-      filledAt: domain.filledAt.toISOString(),
+      km_traveled: domain.fuelConsumption.kmTravelled,
+      fuel_filled: domain.fuelConsumption.fuelFilled,
+      average: domain.fuelConsumption.average,
+      filledAt: domain.fuelConsumption.filledAt.toISOString(),
 
       userCar: domain.car
         ? JSONUserCarSerializer.serialize(domain.car)

@@ -1,4 +1,5 @@
 import { Mapper, StaticImplements, UniqueEntityId } from "@KPBBFC/core";
+import { FuelConsumption } from "@KPBBFC/fuelConsumption";
 
 import { UserFuelConsumption } from "../domains/UserFuelConsumption";
 
@@ -27,11 +28,12 @@ export class PostgresUserFuelConsumptionMapper {
       {
         userId: new UniqueEntityId(props.user_id),
         userCarId: new UniqueEntityId(props.user_car_id),
-        kmTravelled: props.km_traveled,
-        fuelFilled: props.fuel_filled,
-        average: props.average,
-
-        filledAt: props.filled_at,
+        fuelConsumption: FuelConsumption.create({
+          kmTravelled: props.km_traveled,
+          fuelFilled: props.fuel_filled,
+          average: props.average,
+          filledAt: props.filled_at,
+        }),
         createdAt: props.created_at,
         updatedAt: props.updated_at,
         deletedAt: props.deleted_at,
@@ -48,11 +50,11 @@ export class PostgresUserFuelConsumptionMapper {
       user_id: domain.userId.toString(),
       user_car_id: domain.userCarId.toString(),
 
-      km_traveled: domain.kmTravelled,
-      fuel_filled: domain.fuelFilled,
-      average: domain.average,
+      km_traveled: domain.fuelConsumption.kmTravelled,
+      fuel_filled: domain.fuelConsumption.fuelFilled,
+      average: domain.fuelConsumption.average,
+      filled_at: domain.fuelConsumption.filledAt,
 
-      filled_at: domain.filledAt,
       created_at: domain.createdAt ?? new Date(),
       updated_at: domain.updatedAt ?? new Date(),
       deleted_at: domain.deletedAt,

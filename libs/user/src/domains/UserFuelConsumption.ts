@@ -1,4 +1,4 @@
-import { date, number, object } from "joi";
+import { date, object } from "joi";
 
 import {
   AggregateRoot,
@@ -6,6 +6,7 @@ import {
   InternalError,
   UniqueEntityId,
 } from "@KPBBFC/core";
+import { FuelConsumption } from "@KPBBFC/fuelConsumption";
 
 import { User } from "./User";
 import { UserCar } from "./UserCar";
@@ -14,11 +15,7 @@ interface UserFuelConsumptionProps {
   userId: UniqueEntityId;
   userCarId: UniqueEntityId;
 
-  kmTravelled: number;
-  fuelFilled: number;
-  average: number;
-
-  filledAt: Date;
+  fuelConsumption: FuelConsumption;
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
@@ -31,11 +28,8 @@ export class UserFuelConsumption extends AggregateRoot<UserFuelConsumptionProps>
   private static schema = object<UserFuelConsumptionProps>({
     userId: object().required(),
     userCarId: object().required(),
-    kmTravelled: number().required(),
-    fuelFilled: number().required(),
-    average: number().required(),
+    fuelConsumption: object().required(),
 
-    filledAt: date().required(),
     createdAt: date().optional(),
     updatedAt: date().optional(),
     deletedAt: date().optional().allow(null),
@@ -65,20 +59,8 @@ export class UserFuelConsumption extends AggregateRoot<UserFuelConsumptionProps>
     return this._car;
   }
 
-  get kmTravelled(): number {
-    return this.props.kmTravelled;
-  }
-
-  get fuelFilled(): number {
-    return this.props.fuelFilled;
-  }
-
-  get average(): number {
-    return this.props.average;
-  }
-
-  get filledAt(): Date {
-    return this.props.filledAt;
+  get fuelConsumption(): FuelConsumption {
+    return this.props.fuelConsumption;
   }
 
   get createdAt(): Date | undefined {
@@ -91,16 +73,6 @@ export class UserFuelConsumption extends AggregateRoot<UserFuelConsumptionProps>
 
   get deletedAt(): Date | undefined {
     return this.props.deletedAt;
-  }
-
-  static calculateAverage(
-    fuelFilled: number,
-    kmTravelled: number,
-    kmTravelledPrevious: number | undefined
-  ): number {
-    if (!kmTravelledPrevious) return 0;
-
-    return fuelFilled / (kmTravelled - kmTravelledPrevious);
   }
 
   setUser(user: User): void {

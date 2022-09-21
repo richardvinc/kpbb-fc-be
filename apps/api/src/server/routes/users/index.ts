@@ -11,6 +11,7 @@ import { CreateUserController } from "./CreateUserController";
 import { CreateUserFuelConsumptionController } from "./CreateUserFuelConsumptionController";
 import { RetrieveUserCarListController } from "./RetrieveUserCarListController";
 import { RetrieveUserController } from "./RetrieveUserController";
+import { RetrieveUserFuelConsumptionListByCarController } from "./RetrieveUserFuelConsumptionListByCarController";
 import { RetrieveUserListController } from "./RetrieveUserListController";
 
 export function registerUsersRoutes(
@@ -44,6 +45,12 @@ export function registerUsersRoutes(
     asMiddleware(new CreateUserCarController())
   );
 
+  router.get(
+    "/users/cars/:userCarId/fuel",
+    VerifyAuthToken(),
+    VerifyUser(),
+    asMiddleware(new RetrieveUserFuelConsumptionListByCarController())
+  );
   router.post(
     "/users/cars/:userCarId/fuel",
     VerifyAuthToken(),

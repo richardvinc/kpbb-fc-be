@@ -1,6 +1,7 @@
 import { RequestError } from "@KPBBFC/core/errors";
 import { getCurrentHub } from "@KPBBFC/core/hub";
 import { KoaBaseController } from "@KPBBFC/core/infrastructure/http/koa";
+import { FuelConsumptionErrors } from "@KPBBFC/fuelConsumption";
 import { ICommandIdentity, ICommandWithIdentity } from "@KPBBFC/types";
 import { CreateUserFuelConsumptionDTO } from "@KPBBFC/user";
 
@@ -59,6 +60,7 @@ export class CreateUserFuelConsumptionController extends KoaBaseController<AppCo
     if (result.isLeft()) {
       const error = result.error;
       switch (error.constructor) {
+        case FuelConsumptionErrors.FuelConsumptionKmTravelledEqualOrLessThanPrevious:
         case RequestError.InvalidArgumentError:
           this.badRequest(error);
           break;
