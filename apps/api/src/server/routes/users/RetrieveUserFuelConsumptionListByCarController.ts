@@ -61,8 +61,8 @@ export class RetrieveUserFuelConsumptionListByCarController extends KoaBaseContr
           break;
       }
     } else {
-      const user = result.value;
-      this.ok({ user });
+      const data = result.value;
+      this.ok({ data });
     }
 
     logger.trace(`END`);

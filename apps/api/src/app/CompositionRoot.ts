@@ -31,6 +31,14 @@ import {
   getCurrentHub,
   initHub,
 } from "@KPBBFC/core/hub";
+import {
+  AccumulatedFuelConsumptionService,
+  IAccumulatedFuelConsumptionRepository,
+  IAccumulatedFuelConsumptionService,
+  KnexAccumulatedFuelConsumptionRepository,
+  RetrieveAccumulatedFuelConsumptionByCarUseCase,
+  RetrieveAccumulatedFuelConsumptionListUseCase,
+} from "@KPBBFC/fuelConsumption";
 import { BaseApplicationService } from "@KPBBFC/types";
 import {
   CreateUserCarUseCase,
@@ -40,17 +48,22 @@ import {
   IUserCarService,
   IUserFuelConsumptionRepository,
   IUserFuelConsumptionService,
+  IUserFuelConsumptionSummaryRepository,
+  IUserFuelConsumptionSummaryService,
   IUserRepository,
   IUserService,
   KnexUserCarRepository,
   KnexUserFuelConsumptionRepository,
+  KnexUserFuelConsumptionSummaryRepository,
   KnexUserRepository,
   RetrieveUserCarListUseCase,
   RetrieveUserFuelConsumptionListByCarUseCase,
+  RetrieveUserFuelConsumptionSummaryListUseCase,
   RetrieveUserListUseCase,
   RetrieveUserUseCase,
   UserCarService,
   UserFuelConsumptionService,
+  UserFuelConsumptionSummaryService,
   UserService,
 } from "@KPBBFC/user";
 
@@ -67,15 +80,19 @@ export interface AppCradle extends DefaultCradle {
   userRepository: IUserRepository;
   userCarRepository: IUserCarRepository;
   userFuelConsumptionRepository: IUserFuelConsumptionRepository;
+  userFuelConsumptionSummaryRepository: IUserFuelConsumptionSummaryRepository;
   carBrandRepository: ICarBrandRepository;
   carModelRepository: ICarModelRepository;
   carSubModelRepository: ICarSubModelRepository;
+  accumulatedFuelConsumptionRepository: IAccumulatedFuelConsumptionRepository;
 
   // services
   userService: IUserService;
   userCarService: IUserCarService;
   userFuelConsumptionService: IUserFuelConsumptionService;
+  userFuelConsumptionSummaryService: IUserFuelConsumptionSummaryService;
   carService: ICarService;
+  accumulatedFuelConsumptionService: IAccumulatedFuelConsumptionService;
 }
 
 export interface ApplicationService extends BaseApplicationService {
@@ -94,9 +111,12 @@ export interface ApplicationService extends BaseApplicationService {
   // user fuel consumption
   createUserFuelConsumption: CreateUserFuelConsumptionUseCase;
   retrieveUserFuelConsumptionListByCar: RetrieveUserFuelConsumptionListByCarUseCase;
+  retrieveUserFuelConsumptionSummaryList: RetrieveUserFuelConsumptionSummaryListUseCase;
 
   // car
   retrieveCarList: RetrieveCarListUseCase;
+  retrieveAccumulatedFuelConsumptionList: RetrieveAccumulatedFuelConsumptionListUseCase;
+  retrieveAccumulatedFuelConsumptionByCar: RetrieveAccumulatedFuelConsumptionByCarUseCase;
 }
 
 export async function composeApplication(): Promise<void> {
@@ -119,9 +139,15 @@ export async function composeApplication(): Promise<void> {
       userFuelConsumptionRepository: asClass(
         KnexUserFuelConsumptionRepository
       ).singleton(),
+      userFuelConsumptionSummaryRepository: asClass(
+        KnexUserFuelConsumptionSummaryRepository
+      ).singleton(),
       carBrandRepository: asClass(KnexCarBrandRepository).singleton(),
       carModelRepository: asClass(KnexCarModelRepository).singleton(),
       carSubModelRepository: asClass(KnexCarSubModelRepository).singleton(),
+      accumulatedFuelConsumptionRepository: asClass(
+        KnexAccumulatedFuelConsumptionRepository
+      ).singleton(),
 
       // services
       userService: asClass(UserService).singleton(),
@@ -129,7 +155,13 @@ export async function composeApplication(): Promise<void> {
       userFuelConsumptionService: asClass(
         UserFuelConsumptionService
       ).singleton(),
+      userFuelConsumptionSummaryService: asClass(
+        UserFuelConsumptionSummaryService
+      ).singleton(),
       carService: asClass(CarService).singleton(),
+      accumulatedFuelConsumptionService: asClass(
+        AccumulatedFuelConsumptionService
+      ).singleton(),
     },
     useCases: {
       // auth
@@ -146,6 +178,9 @@ export async function composeApplication(): Promise<void> {
       retrieveUserFuelConsumptionListByCar: asClass(
         RetrieveUserFuelConsumptionListByCarUseCase
       ).singleton(),
+      retrieveUserFuelConsumptionSummaryList: asClass(
+        RetrieveUserFuelConsumptionSummaryListUseCase
+      ).singleton(),
 
       // user-fuel-consumption
       createUserFuelConsumption: asClass(
@@ -154,6 +189,12 @@ export async function composeApplication(): Promise<void> {
 
       // car
       retrieveCarList: asClass(RetrieveCarListUseCase).singleton(),
+      retrieveAccumulatedFuelConsumptionList: asClass(
+        RetrieveAccumulatedFuelConsumptionListUseCase
+      ).singleton(),
+      retrieveAccumulatedFuelConsumptionByCar: asClass(
+        RetrieveAccumulatedFuelConsumptionByCarUseCase
+      ).singleton(),
     },
   });
 }

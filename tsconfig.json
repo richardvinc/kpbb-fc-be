@@ -16,6 +16,7 @@
       "@KPBBFC/db/*": ["libs/db/src/*"],
       "@KPBBFC/types/*": ["libs/types/src/*"],
       "@KPBBFC/car/*": ["libs/car/src/*"],
+      "@KPBBFC/user/*": ["libs/user/src/*"],
       "@KPBBFC/fuelConsumption/*": ["libs/fuelConsumption/src/*"]
     },
     "emitDecoratorMetadata": true,

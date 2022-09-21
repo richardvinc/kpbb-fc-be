@@ -2,20 +2,21 @@ import { RequestError } from "@KPBBFC/core/errors";
 import { getCurrentHub } from "@KPBBFC/core/hub";
 import { KoaBaseController } from "@KPBBFC/core/infrastructure/http/koa";
 import { ICommandIdentity, ICommandWithIdentity } from "@KPBBFC/types";
-import { CreateUserCarDTO, UserCarErrors } from "@KPBBFC/user";
+import {
+  RetrieveUserFuelConsumptionSummaryListDTO,
+  UserCarErrors,
+  UserErrors,
+} from "@KPBBFC/user";
 
 import { AppContext } from "../..";
 
-interface CreateUserCarBody {
-  car: {
-    carSubModelId: string;
-    plateNumber: string;
-  };
+interface RetrieveUserFuelConsumptionSummaryListQuery {
+  userCarId: string;
 }
 
-export class CreateUserCarController extends KoaBaseController<AppContext> {
+export class RetrieveUserFuelConsumptionSummaryListController extends KoaBaseController<AppContext> {
   constructor() {
-    super("CreateUserCarController");
+    super("RetrieveUserFuelConsumptionSummaryListController");
   }
 
   async executeImpl(): Promise<void> {
@@ -26,30 +27,32 @@ export class CreateUserCarController extends KoaBaseController<AppContext> {
 
     logger.trace(`BEGIN`);
 
-    const body = (this.ctx.request as any).body as CreateUserCarBody;
-    const identity = this.ctx.identity;
+    const query = this.ctx
+      .query as Partial<RetrieveUserFuelConsumptionSummaryListQuery>;
+
+    const dto: Partial<RetrieveUserFuelConsumptionSummaryListDTO> = {
+      carId: query.userCarId,
+    };
 
     const cmd: ICommandWithIdentity<
-      Partial<CreateUserCarDTO>,
+      Partial<RetrieveUserFuelConsumptionSummaryListDTO>,
       Partial<ICommandIdentity>
     > = {
-      dto: {
-        car: {
-          carSubModelId: body.car.carSubModelId,
-          plateNumber: body.car.plateNumber,
-        },
-      },
+      dto,
       identity: {
-        id: identity.id,
+        id: this.ctx.identity.id,
       },
     };
 
-    const result = await this.ctx.appService.createUserCar.execute(cmd);
+    const result =
+      await this.ctx.appService.retrieveUserFuelConsumptionSummaryList.execute(
+        cmd
+      );
     if (result.isLeft()) {
       const error = result.error;
       switch (error.constructor) {
-        case UserCarErrors.UserCarAlreadyExistsError:
-        case UserCarErrors.UserCarModelNotFoundError:
+        case UserErrors.UserNotFoundError:
+        case UserCarErrors.UserCarNotFoundError:
         case RequestError.InvalidArgumentError:
           this.badRequest(error);
           break;

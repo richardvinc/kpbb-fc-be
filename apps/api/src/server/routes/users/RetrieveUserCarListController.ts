@@ -42,8 +42,8 @@ export class RetrieveUserCarListController extends KoaBaseController<AppContext>
           break;
       }
     } else {
-      const userCars = result.value;
-      this.ok({ cars: userCars });
+      const data = result.value;
+      this.ok({ data });
     }
 
     logger.trace(`END`);

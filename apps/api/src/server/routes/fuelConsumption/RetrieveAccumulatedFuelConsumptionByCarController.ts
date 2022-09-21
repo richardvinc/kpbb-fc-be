@@ -1,18 +1,19 @@
 import { RequestError } from "@KPBBFC/core/errors";
 import { getCurrentHub } from "@KPBBFC/core/hub";
 import { KoaBaseController } from "@KPBBFC/core/infrastructure/http/koa";
+import { RetrieveAccumulatedFuelConsumptionByCarDTO } from "@KPBBFC/fuelConsumption";
+import { FuelConsumptionErrors } from "@KPBBFC/fuelConsumption/errors";
 import { ICommand } from "@KPBBFC/types";
-import { RetrieveUserDTO, UserErrors } from "@KPBBFC/user";
 
 import { AppContext } from "../..";
 
-interface RetrieveUserParams {
-  id: string;
+interface RetrieveAccumulatedFuelConsumptionByCarParams {
+  id?: string;
 }
 
-export class RetrieveUserController extends KoaBaseController<AppContext> {
+export class RetrieveAccumulatedFuelConsumptionByCarController extends KoaBaseController<AppContext> {
   constructor() {
-    super("RetrieveUserController");
+    super("RetrieveAccumulatedFuelConsumptionByCarController");
   }
 
   async executeImpl(): Promise<void> {
@@ -23,23 +24,24 @@ export class RetrieveUserController extends KoaBaseController<AppContext> {
 
     logger.trace(`BEGIN`);
 
-    const params = this.ctx.params as RetrieveUserParams;
+    const params = this.ctx
+      .params as Partial<RetrieveAccumulatedFuelConsumptionByCarParams>;
 
-    const dto: Partial<RetrieveUserDTO> = {
-      by: {
-        id: params.id,
+    const cmd: ICommand<Partial<RetrieveAccumulatedFuelConsumptionByCarDTO>> = {
+      dto: {
+        carSubModelId: params.id,
       },
     };
 
-    const cmd: ICommand<Partial<RetrieveUserDTO>> = {
-      dto,
-    };
+    const result =
+      await this.ctx.appService.retrieveAccumulatedFuelConsumptionByCar.execute(
+        cmd
+      );
 
-    const result = await this.ctx.appService.retrieveUser.execute(cmd);
     if (result.isLeft()) {
       const error = result.error;
       switch (error.constructor) {
-        case UserErrors.UserNotFoundError:
+        case FuelConsumptionErrors.FuelConsumptionNotFound:
         case RequestError.InvalidArgumentError:
           this.badRequest(error);
           break;

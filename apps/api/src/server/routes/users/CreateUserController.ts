@@ -51,8 +51,8 @@ export class CreateUserController extends KoaBaseController<AppContext> {
           break;
       }
     } else {
-      const user = result.value;
-      this.ok({ user });
+      const data = result.value;
+      this.ok({ data });
     }
 
     logger.trace(`END`);

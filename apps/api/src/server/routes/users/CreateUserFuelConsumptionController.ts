@@ -69,8 +69,8 @@ export class CreateUserFuelConsumptionController extends KoaBaseController<AppCo
           break;
       }
     } else {
-      const userFuelConsumption = result.value;
-      this.ok({ user: userFuelConsumption });
+      const data = result.value;
+      this.ok({ data });
     }
 
     logger.trace(`END`);

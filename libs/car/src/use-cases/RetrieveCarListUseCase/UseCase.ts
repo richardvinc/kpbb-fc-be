@@ -2,6 +2,7 @@ import { CarErrors } from "@KPBBFC/car/errors";
 import { JSONCarSubModelSerializer } from "@KPBBFC/car/serializers";
 import { ICarService } from "@KPBBFC/car/services";
 import {
+  BaseError,
   BaseResponse,
   getCurrentHub,
   InternalError,
@@ -23,7 +24,7 @@ interface Cradle {
 }
 
 export type RetrieveCarListResponse = BaseResponse<
-  CarErrors.CarNotFoundError,
+  BaseError | CarErrors.CarNotFoundError,
   RetrieveCarListPayload
 >;
 
@@ -64,7 +65,7 @@ export class RetrieveCarListUseCase extends UseCase<
             (id) => new UniqueEntityId(id)
           ),
         },
-        search: dto.by?.search,
+        search: dto.filter?.search,
         limit: dto.filter?.limit,
         page: dto.filter?.page,
       });

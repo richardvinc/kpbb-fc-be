@@ -8,4 +8,11 @@ export namespace FuelConsumptionErrors {
       super(`Given Km travelled is equal or less than previous entries`);
     }
   }
+  export class FuelConsumptionNotFound extends BaseError {
+    readonly code = "fuel_consumption_not_found";
+
+    constructor() {
+      super(`Fuel consumption data not found`);
+    }
+  }
 }

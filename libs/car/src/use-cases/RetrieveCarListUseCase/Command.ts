@@ -9,10 +9,8 @@ export type RetrieveCarListPayload = JSONCarSubModelProps[];
 
 export type RetrieveCarListDTO = {
   version?: number;
-  by?: {
-    search?: string;
-  };
   filter?: {
+    search?: string;
     carBrandIds?: string[];
     carModelIds?: string[];
     limit?: number;
@@ -23,10 +21,8 @@ export type RetrieveCarListDTO = {
 export const RetrieveCarListCommandSchema = object<RetrieveCarListCommand>({
   dto: object<RetrieveCarListDTO>({
     version: number().optional(),
-    by: object({
-      search: string().min(2).optional(),
-    }).optional(),
     filter: object({
+      search: string().min(2).optional(),
       carBrandIds: array().items(string().uuid()).optional(),
       carModelIds: array().items(string().uuid()).optional(),
       limit: number().optional(),
