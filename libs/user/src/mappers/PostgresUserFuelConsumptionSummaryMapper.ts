@@ -10,7 +10,7 @@ export interface PostgresUserFuelConsumptionSummaryProps {
   car_model_id: string;
   car_sub_model_id: string;
 
-  total_km_traveled: number;
+  total_km_travelled: number;
   total_fuel_filled: number;
   average: number;
 
@@ -34,7 +34,7 @@ export class PostgresUserFuelConsumptionSummaryMapper {
       carModelId: new UniqueEntityId(props.car_model_id),
       carSubModelId: new UniqueEntityId(props.car_sub_model_id),
 
-      totalKmTravelled: props.total_km_traveled,
+      totalKmTravelled: props.total_km_travelled,
       totalFuelFilled: props.total_fuel_filled,
       average: props.average,
 
@@ -55,7 +55,7 @@ export class PostgresUserFuelConsumptionSummaryMapper {
       car_model_id: domain.carModelId.toString(),
       car_sub_model_id: domain.carSubModelId.toString(),
 
-      total_km_traveled: domain.totalKmTravelled,
+      total_km_travelled: domain.totalKmTravelled,
       total_fuel_filled: domain.totalFuelFilled,
       average: domain.average,
 

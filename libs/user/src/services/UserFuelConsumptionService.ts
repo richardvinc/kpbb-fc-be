@@ -69,6 +69,36 @@ export class UserFuelConsumptionService
     }
   }
 
+  async getLastEntry(): Promise<UserFuelConsumption | undefined> {
+    const logger = this.logger.child({
+      methodName: "getLastEntries",
+      traceId: getCurrentHub().getTraceId(),
+    });
+
+    logger.trace("BEGIN");
+
+    try {
+      const userFuelConsumption =
+        await this.userFuelConsumptionRepository.getLastEntry();
+      if (userFuelConsumption) {
+        // populate cars
+        const userCar = await this.userCarRepository.get({
+          selection: {
+            id: userFuelConsumption.userCarId,
+          },
+        });
+        if (userCar) {
+          userFuelConsumption.setCar(userCar);
+        }
+      }
+
+      return userFuelConsumption;
+    } catch (error) {
+      logger.fatal(error as Error);
+      throw error;
+    }
+  }
+
   async getAll(
     options?: GetAllUserFuelConsumptionSelection
   ): Promise<UserFuelConsumption[]> {

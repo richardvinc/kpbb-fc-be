@@ -1,13 +1,13 @@
 import { number, object, string } from "joi";
 
-import { JSONAccumulatedFuelConsumptionProps } from "@KPBBFC/fuelConsumption/serializers";
+import { JSONAccumulatedFuelConsumptionListProps } from "@KPBBFC/fuelConsumption/serializers";
 import { ICommand } from "@KPBBFC/types";
 
 export type RetrieveAccumulatedFuelConsumptionListCommand =
   ICommand<RetrieveAccumulatedFuelConsumptionListDTO>;
 
 export type RetrieveAccumulatedFuelConsumptionListPayload =
-  JSONAccumulatedFuelConsumptionProps[];
+  JSONAccumulatedFuelConsumptionListProps;
 
 export type RetrieveAccumulatedFuelConsumptionListDTO = {
   version?: number;
@@ -15,6 +15,7 @@ export type RetrieveAccumulatedFuelConsumptionListDTO = {
   carBrandId?: string;
   carModelId?: string;
   carSubModelId?: string;
+  search?: string;
   limit?: number;
   page?: number;
 };
@@ -27,6 +28,7 @@ export const RetrieveAccumulatedFuelConsumptionListCommandSchema =
       carBrandId: string().optional(),
       carModelId: string().optional(),
       carSubModelId: string().optional(),
+      search: string().min(3).optional(),
       limit: number().optional(),
       page: number().optional(),
     }).optional(),

@@ -7,16 +7,20 @@ import {
   UniqueEntityId,
   UseCase,
 } from "@KPBBFC/core";
-import { OrderDirection } from "@KPBBFC/db/repository/BaseRepository";
 import {
   FuelConsumption,
   FuelConsumptionErrors,
+  IAccumulatedFuelConsumptionService,
 } from "@KPBBFC/fuelConsumption";
 
 import { UserFuelConsumption } from "../../domains";
-import { UserFuelConsumptionOrderFields } from "../../repositories";
+import { UserCarErrors } from "../../errors";
 import { JSONUserFuelConsumptionSerializer } from "../../serializers";
-import { IUserFuelConsumptionService } from "../../services";
+import {
+  IUserCarService,
+  IUserFuelConsumptionService,
+  IUserFuelConsumptionSummaryService,
+} from "../../services";
 import {
   CreateUserFuelConsumptionCommand,
   CreateUserFuelConsumptionCommandSchema,
@@ -25,11 +29,15 @@ import {
 } from "./Command";
 
 interface Cradle {
+  userCarService: IUserCarService;
   userFuelConsumptionService: IUserFuelConsumptionService;
+  userFuelConsumptionSummaryService: IUserFuelConsumptionSummaryService;
+  accumulatedFuelConsumptionService: IAccumulatedFuelConsumptionService;
 }
 
 export type CreateUserFuelConsumptionResponse = BaseResponse<
-  FuelConsumptionErrors.FuelConsumptionKmTravelledEqualOrLessThanPrevious,
+  | FuelConsumptionErrors.FuelConsumptionKmTravelledEqualOrLessThanPrevious
+  | UserCarErrors.UserCarNotFoundError,
   CreateUserFuelConsumptionPayload
 >;
 
@@ -40,12 +48,20 @@ export class CreateUserFuelConsumptionUseCase extends UseCase<
 > {
   protected schema = CreateUserFuelConsumptionCommandSchema;
 
+  private userCarService: IUserCarService;
   private userFuelConsumptionService: IUserFuelConsumptionService;
+  private userFuelConsumptionSummaryService: IUserFuelConsumptionSummaryService;
+  private accumulatedFuelConsumptionService: IAccumulatedFuelConsumptionService;
 
   constructor(cradle: Cradle) {
     super("CreateUserFuelConsumptionUseCase");
 
+    this.userCarService = cradle.userCarService;
     this.userFuelConsumptionService = cradle.userFuelConsumptionService;
+    this.userFuelConsumptionSummaryService =
+      cradle.userFuelConsumptionSummaryService;
+    this.accumulatedFuelConsumptionService =
+      cradle.accumulatedFuelConsumptionService;
   }
 
   async handler(
@@ -62,21 +78,18 @@ export class CreateUserFuelConsumptionUseCase extends UseCase<
 
     const { identity, dto } = req;
     const userId = new UniqueEntityId(identity.id);
+    const userCarId = new UniqueEntityId(dto.fuelConsumption.carId);
+
+    const userCar = await this.userCarService.get({
+      selection: {
+        id: userCarId,
+      },
+    });
+    if (!userCar) return left(new UserCarErrors.UserCarNotFoundError());
 
     try {
-      const lastUserFuelConsumption = (
-        await this.userFuelConsumptionService.getAll({
-          selection: {
-            userIds: [new UniqueEntityId(identity.id)],
-            userCarIds: [new UniqueEntityId(dto.fuelConsumption.carId)],
-          },
-          orderBy: [
-            UserFuelConsumptionOrderFields.FILLED_AT,
-            OrderDirection.DESC,
-          ],
-          limit: 1,
-        })
-      )[0]; // can be undefined
+      const lastUserFuelConsumption =
+        await this.userFuelConsumptionService.getLastEntry();
 
       if (lastUserFuelConsumption) {
         if (
@@ -91,7 +104,7 @@ export class CreateUserFuelConsumptionUseCase extends UseCase<
 
       const userFuelConsumption = UserFuelConsumption.create({
         userId,
-        userCarId: new UniqueEntityId(dto.fuelConsumption.carId),
+        userCarId,
         fuelConsumption: FuelConsumption.create({
           kmTravelled: dto.fuelConsumption.kmTravelled,
           fuelFilled: dto.fuelConsumption.fuelFilled,
@@ -105,6 +118,15 @@ export class CreateUserFuelConsumptionUseCase extends UseCase<
       });
 
       await this.userFuelConsumptionService.persist(userFuelConsumption);
+
+      // calculate properties for user fuel consumption summary
+      await this.userFuelConsumptionSummaryService.calculateProperties(
+        userCarId
+      );
+      // calculate properties for accumulated fuel consumption based on car sub model id
+      await this.accumulatedFuelConsumptionService.calculateProperties(
+        userCar.carSubModelId
+      );
 
       logger.trace(`END`);
       return right(

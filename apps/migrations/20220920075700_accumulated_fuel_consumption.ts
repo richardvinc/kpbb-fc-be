@@ -18,7 +18,7 @@ export async function up(knex: Knex): Promise<void> {
       .defaultTo(0)
       .comment("Total km travelled in km");
     table
-      .integer("average")
+      .decimal("average")
       .defaultTo(0)
       .comment("Average fuel consumption in km/l");
 

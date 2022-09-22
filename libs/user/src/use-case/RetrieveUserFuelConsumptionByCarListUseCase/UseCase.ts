@@ -11,7 +11,10 @@ import { OrderDirection } from "@KPBBFC/db/repository/BaseRepository";
 
 import { UserFuelConsumptionHistory } from "../../domains";
 import { UserCarErrors, UserErrors } from "../../errors";
-import { UserFuelConsumptionOrderFields } from "../../repositories";
+import {
+  GetAllUserFuelConsumptionSelection,
+  UserFuelConsumptionOrderFields,
+} from "../../repositories";
 import { JSONUserFuelConsumptionHistorySerializer } from "../../serializers";
 import { IUserCarService, IUserFuelConsumptionService } from "../../services";
 import { IUserService } from "../../services/IUserService";
@@ -81,13 +84,21 @@ export class RetrieveUserFuelConsumptionListByCarUseCase extends UseCase<
       });
       if (!userCar) return left(new UserCarErrors.UserCarNotFoundError());
 
-      const fuelConsumptions = await this.userFuelConsumptionService.getAll({
+      const filter: GetAllUserFuelConsumptionSelection = {
         selection: {
           userIds: [new UniqueEntityId(identity.id)],
           userCarIds: [new UniqueEntityId(dto.carId)],
         },
+        limit: dto.limit,
+        page: dto.page,
         orderBy: [UserFuelConsumptionOrderFields.FILLED_AT, OrderDirection.ASC],
-      });
+      };
+      const fuelConsumptions = await this.userFuelConsumptionService.getAll(
+        filter
+      );
+      const totalEntries = await this.userFuelConsumptionService.getCount(
+        filter
+      );
 
       const userFuelConsumptionHistory = UserFuelConsumptionHistory.create({
         user,
@@ -97,7 +108,8 @@ export class RetrieveUserFuelConsumptionListByCarUseCase extends UseCase<
 
       return right(
         JSONUserFuelConsumptionHistorySerializer.serialize(
-          userFuelConsumptionHistory
+          userFuelConsumptionHistory,
+          totalEntries
         )
       );
     } catch (err) {

@@ -47,7 +47,7 @@ export class KnexUserFuelConsumptionRepository
     logger.trace(`BEGIN`);
     logger.debug({ args: { options } });
 
-    let car: UserFuelConsumption | undefined;
+    let ufc: UserFuelConsumption | undefined;
 
     const query = this.client(this.TABLE_NAME)
       .select()
@@ -63,10 +63,35 @@ export class KnexUserFuelConsumptionRepository
 
     const row = await query;
 
-    if (row) car = PostgresUserFuelConsumptionMapper.toDomain(row);
+    if (row) ufc = PostgresUserFuelConsumptionMapper.toDomain(row);
 
     logger.trace(`END`);
-    return car;
+    return ufc;
+  }
+
+  async getLastEntry(): Promise<UserFuelConsumption | undefined> {
+    const logger = this.logger.child({
+      method: "getLastEntries",
+      traceId: getCurrentHub().getTraceId(),
+    });
+
+    logger.trace(`BEGIN`);
+
+    let ufc: UserFuelConsumption | undefined;
+
+    const query = this.client(this.TABLE_NAME)
+      .select()
+      .orderBy("filled_at", "desc")
+      .first();
+
+    logger.info({ query: query.toQuery() });
+
+    const row = await query;
+
+    if (row) ufc = PostgresUserFuelConsumptionMapper.toDomain(row);
+
+    logger.trace(`END`);
+    return ufc;
   }
 
   async getAll(
@@ -109,8 +134,10 @@ export class KnexUserFuelConsumptionRepository
             options.orderBy[1] === OrderDirection.ASC ? "asc" : "desc"
           );
         }
+
         if (options?.limit) {
           qb.limit(options.limit);
+          if (options.page) qb.offset(options.limit * (options.page - 1));
         }
 
         qb.whereNull(`deleted_at`);
@@ -119,10 +146,10 @@ export class KnexUserFuelConsumptionRepository
     logger.info({ query: query.toQuery() });
 
     const rows = await query;
-    const cars = rows.map(PostgresUserFuelConsumptionMapper.toDomain);
+    const ufcs = rows.map(PostgresUserFuelConsumptionMapper.toDomain);
 
     logger.trace(`END`);
-    return cars;
+    return ufcs;
   }
 
   async getCount(

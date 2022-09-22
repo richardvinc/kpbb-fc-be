@@ -14,6 +14,8 @@ export type RetrieveUserFuelConsumptionListByCarPayload =
 export type RetrieveUserFuelConsumptionListByCarDTO = {
   version?: number;
   carId: string;
+  limit?: number;
+  page?: number;
 };
 
 export const RetrieveUserFuelConsumptionListByCarCommandSchema =
@@ -21,6 +23,8 @@ export const RetrieveUserFuelConsumptionListByCarCommandSchema =
     dto: object<RetrieveUserFuelConsumptionListByCarDTO>({
       version: number().optional(),
       carId: string().required(),
+      limit: number().optional(),
+      page: number().optional(),
     }).optional(),
     identity: object<ICommandIdentity>({
       id: string().required(),

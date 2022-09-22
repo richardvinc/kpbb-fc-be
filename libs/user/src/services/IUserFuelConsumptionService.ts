@@ -13,6 +13,8 @@ export interface IUserFuelConsumptionService {
   ): Promise<UserFuelConsumption[]>;
   getCount(options?: GetAllUserFuelConsumptionSelection): Promise<number>;
 
+  getLastEntry(): Promise<UserFuelConsumption | undefined>;
+
   persist(userFuelConsumption: UserFuelConsumption): Promise<void>;
   // updateUserFuelConsumption(UserFuelConsumption: UserFuelConsumption): Promise<void>;
 }

@@ -10,15 +10,15 @@ export async function up(knex: Knex): Promise<void> {
     table.uuid("car_sub_model_id").references("id").inTable("car_sub_models");
 
     table
-      .integer("total_km_traveled")
+      .integer("total_km_travelled")
       .defaultTo(0)
-      .comment("Total km traveled in km");
+      .comment("Total km travelled in km");
     table
       .integer("total_fuel_filled")
       .defaultTo(0)
       .comment("Total fuel filled in liters");
     table
-      .integer("average")
+      .decimal("average")
       .defaultTo(0)
       .comment("Average fuel consumption in km/l");
 

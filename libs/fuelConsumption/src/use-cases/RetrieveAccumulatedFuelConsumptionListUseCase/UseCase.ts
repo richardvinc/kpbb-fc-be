@@ -8,6 +8,7 @@ import {
   UniqueEntityId,
   UseCase,
 } from "@KPBBFC/core";
+import { GetAllAccumulatedFuelConsumptionSelection } from "@KPBBFC/fuelConsumption/repositories";
 import { JSONAccumulatedFuelConsumptionSerializer } from "@KPBBFC/fuelConsumption/serializers";
 import { IAccumulatedFuelConsumptionService } from "@KPBBFC/fuelConsumption/services";
 
@@ -58,7 +59,7 @@ export class RetrieveAccumulatedFuelConsumptionListUseCase extends UseCase<
     const dto = req.dto;
 
     try {
-      const results = await this.accumulatedFuelConsumptionService.getAll({
+      const filter: GetAllAccumulatedFuelConsumptionSelection = {
         selection: {
           carBrandIds: dto.carBrandId
             ? [new UniqueEntityId(dto.carBrandId)]
@@ -69,15 +70,22 @@ export class RetrieveAccumulatedFuelConsumptionListUseCase extends UseCase<
           carSubModelIds: dto.carSubModelId
             ? [new UniqueEntityId(dto.carSubModelId)]
             : undefined,
+          search: dto.search,
         },
         limit: dto.limit,
         page: dto.page,
-      });
+      };
+      const results = await this.accumulatedFuelConsumptionService.getAll(
+        filter
+      );
+      const totalEntries =
+        await this.accumulatedFuelConsumptionService.getCount(filter);
 
       logger.trace(`END`);
 
-      const response = results.map((r) =>
-        JSONAccumulatedFuelConsumptionSerializer.serialize(r)
+      const response = JSONAccumulatedFuelConsumptionSerializer.serializeList(
+        results,
+        totalEntries
       );
 
       return right(response);

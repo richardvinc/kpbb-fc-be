@@ -14,6 +14,11 @@ interface RetrieveUserFuelConsumptionListByCarParams {
   userCarId: string;
 }
 
+interface RetrieveUserFuelConsumptionListByCarQuery {
+  limit: number;
+  page: number;
+}
+
 export class RetrieveUserFuelConsumptionListByCarController extends KoaBaseController<AppContext> {
   constructor() {
     super("RetrieveUserFuelConsumptionListByCarController");
@@ -29,9 +34,13 @@ export class RetrieveUserFuelConsumptionListByCarController extends KoaBaseContr
 
     const params = this.ctx
       .params as RetrieveUserFuelConsumptionListByCarParams;
+    const query = this.ctx
+      .query as Partial<RetrieveUserFuelConsumptionListByCarQuery>;
 
     const dto: Partial<RetrieveUserFuelConsumptionListByCarDTO> = {
       carId: params.userCarId,
+      limit: query.limit ?? 10,
+      page: query.page ?? 1,
     };
 
     const cmd: ICommandWithIdentity<

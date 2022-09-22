@@ -1,4 +1,4 @@
-import { date, number, object } from "joi";
+import { date, number, object, string } from "joi";
 
 import { CarSubModel } from "@KPBBFC/car";
 import { UniqueEntityId, ValueObject } from "@KPBBFC/core/domain";
@@ -9,6 +9,7 @@ export interface AccumulatedFuelConsumptionProps {
   carBrandId: UniqueEntityId;
   carModelId: UniqueEntityId;
   carSubModelId: UniqueEntityId;
+  printedName?: string;
 
   totalCar: number;
   totalKmTravelled: number;
@@ -27,6 +28,7 @@ export class AccumulatedFuelConsumption extends ValueObject<AccumulatedFuelConsu
     carBrandId: object().required(),
     carModelId: object().required(),
     carSubModelId: object().required(),
+    printedName: string().optional(),
 
     totalCar: number().required(),
     totalKmTravelled: number().required(),
@@ -48,6 +50,10 @@ export class AccumulatedFuelConsumption extends ValueObject<AccumulatedFuelConsu
 
   get carSubModelId(): UniqueEntityId {
     return this.props.carSubModelId;
+  }
+
+  get printedName(): string | undefined {
+    return this.props.printedName;
   }
 
   get car(): CarSubModel | undefined {
@@ -84,6 +90,26 @@ export class AccumulatedFuelConsumption extends ValueObject<AccumulatedFuelConsu
 
   public setCar(car: CarSubModel): void {
     this._car = car;
+  }
+
+  public setTotalKmTravelled(val: number): void {
+    this.props.totalKmTravelled = val;
+    this.props.updatedAt = new Date();
+  }
+
+  public setTotalFuelFilled(val: number): void {
+    this.props.totalFuelFilled = val;
+    this.props.updatedAt = new Date();
+  }
+
+  public setAverage(val: number): void {
+    this.props.average = val;
+    this.props.updatedAt = new Date();
+  }
+
+  public setTotalCar(val: number): void {
+    this.props.totalCar = val;
+    this.props.updatedAt = new Date();
   }
 
   private constructor(props: AccumulatedFuelConsumptionProps) {

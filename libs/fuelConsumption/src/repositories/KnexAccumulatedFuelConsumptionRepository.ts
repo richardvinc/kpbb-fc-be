@@ -1,6 +1,7 @@
 import Knex from "knex";
 
-import { getCurrentHub } from "@KPBBFC/core";
+import { getCurrentHub, UniqueEntityId } from "@KPBBFC/core";
+import { OrderDirection } from "@KPBBFC/db/repository/BaseRepository";
 import {
   KnexBaseRepository,
   KnexBaseRepositoryOptions,
@@ -12,6 +13,7 @@ import {
   PostgresAccumulatedFuelConsumptionProps,
 } from "../mappers";
 import {
+  AccumulatedFuelConsumptionOrderFields,
   GetAccumulatedFuelConsumptionSelection,
   GetAllAccumulatedFuelConsumptionSelection,
   IAccumulatedFuelConsumptionRepository,
@@ -21,6 +23,10 @@ interface Cradle {
   knexClient: Knex;
 }
 
+const orderFields = {
+  [AccumulatedFuelConsumptionOrderFields.CREATED_AT]: "created_at",
+  [AccumulatedFuelConsumptionOrderFields.AVERAGE]: "average",
+};
 export class KnexAccumulatedFuelConsumptionRepository
   extends KnexBaseRepository<PostgresAccumulatedFuelConsumptionProps>
   implements IAccumulatedFuelConsumptionRepository
@@ -30,6 +36,104 @@ export class KnexAccumulatedFuelConsumptionRepository
   constructor(cradle: Cradle) {
     super(cradle.knexClient, "KnexAccumulatedFuelConsumptionRepository");
   }
+
+  async getTotalKmTravelled(carSubModelId: UniqueEntityId): Promise<number> {
+    const logger = this.logger.child({
+      method: "getTotalKm",
+      traceId: getCurrentHub().getTraceId(),
+    });
+
+    logger.trace(`BEGIN`);
+    logger.debug({ args: { carSubModelId } });
+
+    const query = this.client("user_fuel_consumption_summary")
+      .sum("total_km_travelled as sum")
+      .where("car_sub_model_id", carSubModelId.toString())
+      .first();
+
+    logger.info({ query: query.toQuery() });
+
+    // row can be null if there is no data
+    const row = (await query) as unknown as { sum: string };
+
+    logger.debug({ row });
+
+    logger.trace(`END`);
+    return row ? +row.sum : 0;
+  }
+
+  async getTotalFuelFilled(carSubModelId: UniqueEntityId): Promise<number> {
+    const logger = this.logger.child({
+      method: "getTotalFuelFilled",
+      traceId: getCurrentHub().getTraceId(),
+    });
+
+    logger.trace(`BEGIN`);
+    logger.debug({ args: { carSubModelId } });
+
+    const query = this.client("user_fuel_consumption_summary")
+      .sum("total_fuel_filled as sum")
+      .where("car_sub_model_id", carSubModelId.toString())
+      .first();
+
+    logger.info({ query: query.toQuery() });
+
+    const row = (await query) as unknown as { sum: string };
+
+    logger.debug({ row });
+
+    logger.trace(`END`);
+    return row ? +row.sum : 0;
+  }
+
+  async getTotalAverage(carSubModelId: UniqueEntityId): Promise<number> {
+    const logger = this.logger.child({
+      method: "getTotalAverage",
+      traceId: getCurrentHub().getTraceId(),
+    });
+
+    logger.trace(`BEGIN`);
+    logger.debug({ args: { carSubModelId } });
+
+    const query = this.client("user_fuel_consumption_summary")
+      .avg("average as avg")
+      .where("car_sub_model_id", carSubModelId.toString())
+      .first();
+
+    logger.info({ query: query.toQuery() });
+
+    const row = (await query) as unknown as { avg: string };
+
+    logger.debug({ row });
+
+    logger.trace(`END`);
+    return row ? +row.avg : 0;
+  }
+
+  async getTotalCar(carSubModelId: UniqueEntityId): Promise<number> {
+    const logger = this.logger.child({
+      method: "getTotalCar",
+      traceId: getCurrentHub().getTraceId(),
+    });
+
+    logger.trace(`BEGIN`);
+    logger.debug({ args: { carSubModelId } });
+
+    const query = this.client("user_fuel_consumption_summary")
+      .count("* as count")
+      .where("car_sub_model_id", carSubModelId.toString())
+      .first();
+
+    logger.info({ query: query.toQuery() });
+
+    const row = (await query) as unknown as { count: string };
+
+    logger.debug({ row });
+
+    logger.trace(`END`);
+    return row ? +row.count : 0;
+  }
+
   async get(
     options?: GetAccumulatedFuelConsumptionSelection
   ): Promise<AccumulatedFuelConsumption | undefined> {
@@ -43,8 +147,7 @@ export class KnexAccumulatedFuelConsumptionRepository
 
     let car: AccumulatedFuelConsumption | undefined;
 
-    const query = this.client(this.TABLE_NAME)
-      .select()
+    const query = this.getAccumulatedFuelConsumptionWithCarName()
       .modify((qb) => {
         // filters
         if (options?.selection?.carBrandId) {
@@ -82,9 +185,8 @@ export class KnexAccumulatedFuelConsumptionRepository
     logger.trace(`BEGIN`);
     logger.debug({ args: { options } });
 
-    const query = this.client(this.TABLE_NAME)
-      .select()
-      .modify((qb) => {
+    const query = this.getAccumulatedFuelConsumptionWithCarName().modify(
+      (qb) => {
         // filters
         if (options?.selection?.carBrandIds) {
           qb.whereIn(
@@ -104,14 +206,27 @@ export class KnexAccumulatedFuelConsumptionRepository
             options.selection.carSubModelIds.map((id) => id.toString())
           );
         }
+        if (options?.selection?.search) {
+          qb.whereRaw(`lower(printed_name) LIKE ?`, [
+            `%${options.selection.search.toLowerCase()}%`,
+          ]);
+        }
 
         if (options?.limit) {
           qb.limit(options.limit);
           if (options.page) qb.offset(options.limit * (options.page - 1));
         }
 
-        qb.whereNull(`deleted_at`);
-      });
+        if (options?.orderBy) {
+          qb.orderBy(
+            orderFields[options.orderBy[0]],
+            options.orderBy[1] === OrderDirection.ASC ? "asc" : "desc"
+          );
+        }
+
+        qb.whereNull(`${this.TABLE_NAME}.deleted_at`);
+      }
+    );
 
     logger.info({ query: query.toQuery() });
 
@@ -133,8 +248,7 @@ export class KnexAccumulatedFuelConsumptionRepository
     logger.trace(`BEGIN`);
     logger.debug({ args: { options } });
 
-    const query = this.client(this.TABLE_NAME)
-      .count("* as count")
+    const query = this.getCountAccumulatedFuelConsumptionWithCarName()
       .modify((qb) => {
         // filters
         if (options?.selection?.carBrandIds) {
@@ -155,9 +269,15 @@ export class KnexAccumulatedFuelConsumptionRepository
             options.selection.carSubModelIds.map((id) => id.toString())
           );
         }
+        if (options?.selection?.search) {
+          qb.whereRaw(`lower(printed_name) LIKE ?`, [
+            `%${options.selection.search.toLowerCase()}%`,
+          ]);
+          qb.groupBy("printed_name");
+        }
 
-        // default to not return deleted Cars
-        qb.whereNull("deleted_at");
+        // default to not return deleted entries
+        qb.whereNull(`${this.TABLE_NAME}.deleted_at`);
       })
       .first();
 
@@ -206,7 +326,7 @@ export class KnexAccumulatedFuelConsumptionRepository
     logger.trace(`BEGIN`);
     logger.debug({ args: { fc, options } });
 
-    const { car_sub_model_id, ...props } =
+    const { car_sub_model_id, created_at, ...props } =
       PostgresAccumulatedFuelConsumptionMapper.toPersistence(fc);
 
     const query = this.client(this.TABLE_NAME)
@@ -221,5 +341,17 @@ export class KnexAccumulatedFuelConsumptionRepository
     await query;
 
     logger.trace(`END`);
+  }
+
+  private getAccumulatedFuelConsumptionWithCarName() {
+    return this.client(this.TABLE_NAME)
+      .select(`${this.TABLE_NAME}.*`, `car_sub_models.printed_name`)
+      .leftJoin(`car_sub_models`, `id`, `car_sub_model_id`);
+  }
+
+  private getCountAccumulatedFuelConsumptionWithCarName() {
+    return this.client(this.TABLE_NAME)
+      .count(`* as count`)
+      .leftJoin(`car_sub_models`, `id`, `car_sub_model_id`);
   }
 }

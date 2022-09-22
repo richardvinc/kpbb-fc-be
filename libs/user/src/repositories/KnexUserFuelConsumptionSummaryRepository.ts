@@ -233,7 +233,7 @@ export class KnexUserFuelConsumptionSummaryRepository
     logger.trace(`BEGIN`);
     logger.debug({ args: { ufc, options } });
 
-    const { user_car_id, ...props } =
+    const { user_car_id, created_at, ...props } =
       PostgresUserFuelConsumptionSummaryMapper.toPersistence(ufc);
 
     const query = this.client(this.TABLE_NAME)

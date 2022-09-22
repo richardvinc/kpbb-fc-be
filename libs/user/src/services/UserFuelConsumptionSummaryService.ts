@@ -1,9 +1,14 @@
 import Knex from "knex";
+import { uniq } from "lodash";
 
-import { BaseService, getCurrentHub } from "@KPBBFC/core";
+import { CarSubModel, ICarSubModelRepository } from "@KPBBFC/car";
+import { BaseService, getCurrentHub, UniqueEntityId } from "@KPBBFC/core";
 
 import { UserFuelConsumptionSummary } from "../domains";
-import { IUserCarRepository as IUserCarService } from "../repositories";
+import {
+  IUserCarRepository as IUserCarService,
+  IUserFuelConsumptionRepository,
+} from "../repositories";
 import {
   GetAllUserFuelConsumptionSummarySelection,
   GetUserFuelConsumptionSummarySelection,
@@ -14,16 +19,20 @@ import { IUserFuelConsumptionSummaryService } from "./";
 interface Cradle {
   knexClient: Knex;
 
+  userFuelConsumptionRepository: IUserFuelConsumptionRepository;
   userFuelConsumptionSummaryRepository: IUserFuelConsumptionSummaryRepository;
   userCarService: IUserCarService;
+  carSubModelRepository: ICarSubModelRepository;
 }
 
 export class UserFuelConsumptionSummaryService
   extends BaseService
   implements IUserFuelConsumptionSummaryService
 {
+  private userFuelConsumptionRepository: IUserFuelConsumptionRepository;
   private userFuelConsumptionSummaryRepository: IUserFuelConsumptionSummaryRepository;
   private userCarRepository: IUserCarService;
+  private carSubModelRepository: ICarSubModelRepository;
 
   private knexClient: Knex;
 
@@ -31,9 +40,34 @@ export class UserFuelConsumptionSummaryService
     super("UserFuelConsumptionSummaryService");
 
     this.knexClient = cradle.knexClient;
+    this.userFuelConsumptionRepository = cradle.userFuelConsumptionRepository;
     this.userFuelConsumptionSummaryRepository =
       cradle.userFuelConsumptionSummaryRepository;
     this.userCarRepository = cradle.userCarService;
+    this.carSubModelRepository = cradle.carSubModelRepository;
+  }
+
+  async getUniqueCarSubModel(): Promise<CarSubModel[]> {
+    const logger = this.logger.child({
+      methodName: "getUniqueCarSubModel",
+      traceId: getCurrentHub().getTraceId(),
+    });
+
+    logger.trace("BEGIN");
+
+    const userCars = await this.userCarRepository.getAll();
+    const uniqueSubModelIds = userCars
+      .map((uc) => uc.carSubModelId.toString())
+      .filter(uniq);
+
+    const carSubModels = await this.carSubModelRepository.getAll({
+      selection: {
+        ids: uniqueSubModelIds.map((id) => new UniqueEntityId(id)),
+      },
+    });
+
+    logger.trace("END");
+    return carSubModels;
   }
 
   async get(
@@ -128,6 +162,86 @@ export class UserFuelConsumptionSummaryService
     }
   }
 
+  async calculateProperties(userCarId: UniqueEntityId): Promise<void> {
+    const logger = this.logger.child({
+      methodName: "calculateProperties",
+      traceId: getCurrentHub().getTraceId(),
+    });
+
+    logger.trace("BEGIN");
+    logger.debug({ args: { userCarId } });
+
+    try {
+      const userCar = await this.userCarRepository.get({
+        selection: {
+          id: userCarId,
+        },
+      });
+      if (!userCar) throw `user car not found: ${userCarId.toString()}`;
+
+      const carFuelConsumption =
+        await this.userFuelConsumptionRepository.getAll({
+          selection: {
+            userCarIds: [userCarId],
+          },
+        });
+      const lastEntry = await this.userFuelConsumptionRepository.getLastEntry();
+
+      const totalKmTravelled = lastEntry?.fuelConsumption.kmTravelled ?? 0;
+      const totalFuelFilled = carFuelConsumption.reduce(
+        (acc, cur) => acc + cur.fuelConsumption.fuelFilled,
+        0
+      );
+      const totalAverage =
+        carFuelConsumption.reduce(
+          (acc, cur) => acc + cur.fuelConsumption.average,
+          0
+        ) / carFuelConsumption.length;
+
+      const userFuelConsumptionSummary = UserFuelConsumptionSummary.create({
+        totalKmTravelled,
+        totalFuelFilled,
+        average: totalAverage,
+        userId: userCar.userId,
+        userCarId: userCar.id,
+        carBrandId: userCar.carBrandId,
+        carModelId: userCar.carModelId,
+        carSubModelId: userCar.carSubModelId,
+      });
+
+      await this.upsert(userFuelConsumptionSummary);
+    } catch (error) {
+      logger.fatal(error as Error);
+      throw error;
+    }
+  }
+
+  async upsert(
+    userFuelConsumptionSummary: UserFuelConsumptionSummary
+  ): Promise<void> {
+    const logger = this.logger.child({
+      methodName: "upsert",
+      traceId: getCurrentHub().getTraceId(),
+    });
+
+    logger.trace("BEGIN");
+    logger.debug({ args: { userFuelConsumptionSummary } });
+
+    try {
+      const exists = await this.userFuelConsumptionSummaryRepository.get({
+        selection: {
+          userCarId: userFuelConsumptionSummary.userCarId,
+        },
+      });
+
+      if (!exists) await this.persist(userFuelConsumptionSummary);
+      else await this.update(userFuelConsumptionSummary);
+    } catch (error) {
+      logger.fatal(error as Error);
+      throw error;
+    }
+  }
+
   async persist(
     userFuelConsumptionSummary: UserFuelConsumptionSummary
   ): Promise<void> {
@@ -157,7 +271,7 @@ export class UserFuelConsumptionSummaryService
     }
   }
 
-  async updateUserFuelConsumptionSummary(
+  async update(
     userFuelConsumptionSummary: UserFuelConsumptionSummary
   ): Promise<void> {
     const logger = this.logger.child({

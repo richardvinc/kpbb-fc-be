@@ -1,3 +1,6 @@
+import { CarSubModel } from "@KPBBFC/car";
+import { UniqueEntityId } from "@KPBBFC/core";
+
 import { UserFuelConsumptionSummary } from "../domains";
 import {
   GetAllUserFuelConsumptionSummarySelection,
@@ -15,10 +18,12 @@ export interface IUserFuelConsumptionSummaryService {
     options?: GetAllUserFuelConsumptionSummarySelection
   ): Promise<number>;
 
+  getUniqueCarSubModel(): Promise<CarSubModel[]>;
+
+  calculateProperties(userCarId: UniqueEntityId): Promise<void>;
+
   persist(
     userFuelConsumptionSummary: UserFuelConsumptionSummary
   ): Promise<void>;
-  updateUserFuelConsumptionSummary(
-    userFuelConsumptionSummary: UserFuelConsumptionSummary
-  ): Promise<void>;
+  update(userFuelConsumptionSummary: UserFuelConsumptionSummary): Promise<void>;
 }

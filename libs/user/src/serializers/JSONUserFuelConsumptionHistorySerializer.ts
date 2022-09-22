@@ -17,6 +17,7 @@ export interface JSONUserFuelConsumptionHistoryProps {
   user: JSONUserProps;
   car: JSONUserCarProps;
   fuelConsumptions: JSONFuelConsumptionProps[];
+  totalEntries?: number;
 }
 
 @StaticImplements<
@@ -28,7 +29,8 @@ export class JSONUserFuelConsumptionHistorySerializer {
   }
 
   public static serialize(
-    domain: UserFuelConsumptionHistory
+    domain: UserFuelConsumptionHistory,
+    totalEntries?: number
   ): JSONUserFuelConsumptionHistoryProps {
     return {
       user: JSONUserSerializer.serialize(domain.user),
@@ -36,6 +38,7 @@ export class JSONUserFuelConsumptionHistorySerializer {
       fuelConsumptions: domain.fuelConsumptions.map((fc) =>
         JSONFuelConsumptionSerializer.serialize(fc)
       ),
+      totalEntries,
     };
   }
 }

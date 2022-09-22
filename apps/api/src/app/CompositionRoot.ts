@@ -38,6 +38,7 @@ import {
   KnexAccumulatedFuelConsumptionRepository,
   RetrieveAccumulatedFuelConsumptionByCarUseCase,
   RetrieveAccumulatedFuelConsumptionListUseCase,
+  RetrieveTop10AccumulatedFuelConsumptionListUseCase,
 } from "@KPBBFC/fuelConsumption";
 import { BaseApplicationService } from "@KPBBFC/types";
 import {
@@ -116,6 +117,7 @@ export interface ApplicationService extends BaseApplicationService {
   // car
   retrieveCarList: RetrieveCarListUseCase;
   retrieveAccumulatedFuelConsumptionList: RetrieveAccumulatedFuelConsumptionListUseCase;
+  retrieveTop10AccumulatedFuelConsumptionList: RetrieveTop10AccumulatedFuelConsumptionListUseCase;
   retrieveAccumulatedFuelConsumptionByCar: RetrieveAccumulatedFuelConsumptionByCarUseCase;
 }
 
@@ -191,6 +193,9 @@ export async function composeApplication(): Promise<void> {
       retrieveCarList: asClass(RetrieveCarListUseCase).singleton(),
       retrieveAccumulatedFuelConsumptionList: asClass(
         RetrieveAccumulatedFuelConsumptionListUseCase
+      ).singleton(),
+      retrieveTop10AccumulatedFuelConsumptionList: asClass(
+        RetrieveTop10AccumulatedFuelConsumptionListUseCase
       ).singleton(),
       retrieveAccumulatedFuelConsumptionByCar: asClass(
         RetrieveAccumulatedFuelConsumptionByCarUseCase

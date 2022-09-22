@@ -198,7 +198,7 @@ export class KnexCarSubModelRepository
 
         if (options?.search) {
           qb.whereRaw(
-            `lower(printed_name) like '?'`,
+            `lower(printed_name) like ?`,
             `%${options.search.toLowerCase()}%`
           );
         }

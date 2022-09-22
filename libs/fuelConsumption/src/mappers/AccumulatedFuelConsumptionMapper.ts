@@ -7,6 +7,8 @@ export interface PostgresAccumulatedFuelConsumptionProps {
   car_model_id: string;
   car_sub_model_id: string;
 
+  printed_name?: string;
+
   total_car: number;
   total_km_travelled: number;
   total_fuel_filled: number;
@@ -28,6 +30,8 @@ export class PostgresAccumulatedFuelConsumptionMapper {
       carBrandId: new UniqueEntityId(props.car_brand_id),
       carModelId: new UniqueEntityId(props.car_model_id),
       carSubModelId: new UniqueEntityId(props.car_sub_model_id),
+
+      printedName: props.printed_name,
 
       totalCar: props.total_car,
       totalKmTravelled: props.total_km_travelled,

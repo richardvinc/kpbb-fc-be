@@ -1,3 +1,5 @@
+import { UniqueEntityId } from "@KPBBFC/core";
+
 import { AccumulatedFuelConsumption } from "../domains";
 import {
   GetAccumulatedFuelConsumptionSelection,
@@ -14,6 +16,10 @@ export interface IAccumulatedFuelConsumptionService {
   getCount(
     options?: GetAllAccumulatedFuelConsumptionSelection
   ): Promise<number>;
+
+  getTop10(): Promise<AccumulatedFuelConsumption[]>;
+
+  calculateProperties(carSubModelId?: UniqueEntityId): Promise<void>;
 
   persist(
     accumulatedFuelConsumption: AccumulatedFuelConsumption

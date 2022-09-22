@@ -12,6 +12,7 @@ interface RetrieveAccumulatedFuelConsumptionListQuery {
   carSubModelId?: string;
   limit?: number;
   page?: number;
+  search?: string;
 }
 
 export class RetrieveAccumulatedFuelConsumptionListController extends KoaBaseController<AppContext> {
@@ -35,6 +36,7 @@ export class RetrieveAccumulatedFuelConsumptionListController extends KoaBaseCon
         carBrandId: query.carBrandId,
         carModelId: query.carModelId,
         carSubModelId: query.carSubModelId,
+        search: query.search,
         limit: query.limit ?? 10,
         page: query.page ?? 1,
       },
@@ -56,7 +58,7 @@ export class RetrieveAccumulatedFuelConsumptionListController extends KoaBaseCon
       }
     } else {
       const data = result.value;
-      this.ok({ cars: data });
+      this.ok({ data });
     }
 
     logger.trace(`END`);

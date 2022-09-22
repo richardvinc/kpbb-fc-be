@@ -20,6 +20,7 @@ export interface GetAllUserFuelConsumptionSelection
   extends KnexBaseRepositoryOptions {
   orderBy?: [UserFuelConsumptionOrderFields, OrderDirection];
   limit?: number;
+  page?: number;
   selection?: {
     ids?: UniqueEntityId[];
     userIds?: UniqueEntityId[];
@@ -35,6 +36,8 @@ export interface IUserFuelConsumptionRepository {
     options?: GetAllUserFuelConsumptionSelection
   ): Promise<UserFuelConsumption[]>;
   getCount(options?: GetAllUserFuelConsumptionSelection): Promise<number>;
+
+  getLastEntry(): Promise<UserFuelConsumption | undefined>;
 
   persist(
     car: UserFuelConsumption,
