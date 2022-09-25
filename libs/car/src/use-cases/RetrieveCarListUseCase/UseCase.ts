@@ -1,3 +1,4 @@
+import { TransmissionType } from "@KPBBFC/car/domains";
 import { CarErrors } from "@KPBBFC/car/errors";
 import { JSONCarSubModelSerializer } from "@KPBBFC/car/serializers";
 import { ICarService } from "@KPBBFC/car/services";
@@ -64,6 +65,9 @@ export class RetrieveCarListUseCase extends UseCase<
           modelIds: dto.filter?.carModelIds?.map(
             (id) => new UniqueEntityId(id)
           ),
+          transmissionType: dto.filter?.transmission
+            ? TransmissionType.create(dto.filter.transmission)
+            : undefined,
         },
         search: dto.filter?.search,
         limit: dto.filter?.limit,

@@ -37,7 +37,7 @@ export class RetrieveUserFuelConsumptionListByCarController extends KoaBaseContr
     const query = this.ctx
       .query as Partial<RetrieveUserFuelConsumptionListByCarQuery>;
 
-    const dto: Partial<RetrieveUserFuelConsumptionListByCarDTO> = {
+    const dto: RetrieveUserFuelConsumptionListByCarDTO = {
       carId: params.userCarId,
       limit: query.limit ?? 10,
       page: query.page ?? 1,

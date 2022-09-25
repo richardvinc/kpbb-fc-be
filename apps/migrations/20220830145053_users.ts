@@ -4,7 +4,7 @@ export async function up(knex: Knex): Promise<void> {
   return knex.schema.createTable("users", (table) => {
     table.uuid("id").primary();
 
-    table.string("username", 20).notNullable();
+    table.string("username", 100).notNullable();
     table.string("firebase_uid", 36).notNullable();
 
     table.timestamp("created_at").defaultTo(knex.fn.now());

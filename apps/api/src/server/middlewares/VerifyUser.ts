@@ -9,7 +9,7 @@ import {
   KoaBaseController,
 } from "@KPBBFC/core/infrastructure/http/koa";
 import { ICommand } from "@KPBBFC/types";
-import { RetrieveUserDTO, User, Username } from "@KPBBFC/user";
+import { RetrieveUserDTO, User, UserErrors, Username } from "@KPBBFC/user";
 
 import { AppContext } from "../";
 
@@ -39,6 +39,7 @@ class VerifyUserController extends KoaBaseController<AppContext> {
     if (result.isLeft()) {
       const error = result.error;
       switch (error.constructor) {
+        case UserErrors.UserNotFoundError:
         case AuthErrors.InvalidToken:
         case RequestError.InvalidArgumentError:
           this.badRequest(error);

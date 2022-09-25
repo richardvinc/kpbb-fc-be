@@ -3,19 +3,19 @@ import { Serializer, StaticImplements } from "@KPBBFC/core";
 import { CarSubModel } from "../domains";
 
 export interface JSONCarSubModelProps {
-  id: string;
+  carSubModelId: string;
 
   name: string;
   printedName: string;
 
-  brand: {
-    id: string;
-    name?: string;
-  };
-  model: {
-    id: string;
-    name?: string;
-  };
+  // brand: {
+  //   id: string;
+  //   name?: string;
+  // };
+  // model: {
+  //   id: string;
+  //   name?: string;
+  // };
 
   fuelType: string;
   transmissionType: string;
@@ -38,22 +38,22 @@ export class JSONCarSubModelSerializer {
 
   public static serialize(domain: CarSubModel): JSONCarSubModelProps {
     return {
-      id: domain.id.toString(),
+      carSubModelId: domain.id.toString(),
 
       name: domain.name,
       printedName: domain.printedName,
 
-      brand: {
-        id: domain.brandId.toString(),
-        name: domain.brand?.name,
-      },
-      model: {
-        id: domain.modelId.toString(),
-        name: domain.model?.name,
-      },
+      // brand: {
+      //   id: domain.brandId.toString(),
+      //   name: domain.brand?.name,
+      // },
+      // model: {
+      //   id: domain.modelId.toString(),
+      //   name: domain.model?.name,
+      // },
       fuelType: domain.fuelType.value,
       transmissionType: domain.transmissionType.value,
-      tankCapacity: domain.tankCapacity?.value,
+      tankCapacity: domain.tankCapacity?.value ?? 0,
 
       dimension: {
         length: domain.dimension ? domain.dimension.length.value : 0,

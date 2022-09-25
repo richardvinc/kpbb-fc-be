@@ -283,10 +283,10 @@ export class KnexAccumulatedFuelConsumptionRepository
 
     logger.info({ query: query.toQuery() });
 
-    const rows: { count: number | PromiseLike<number> } = await query;
+    const row = (await query) as unknown as { count: string };
 
     logger.trace(`END`);
-    return rows.count;
+    return row ? +row.count : 0;
   }
 
   async persist(

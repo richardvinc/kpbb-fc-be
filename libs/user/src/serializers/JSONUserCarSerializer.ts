@@ -19,9 +19,10 @@ export class JSONUserCarSerializer {
     if (!domain.car) throw `user car is required`;
 
     return {
-      ...JSONCarSubModelSerializer.serialize(domain.car),
       id: domain.id.toString(),
       plateNumber: domain.plateNumber.value,
+
+      ...JSONCarSubModelSerializer.serialize(domain.car),
 
       createdAt: domain.createdAt?.toISOString(),
       updatedAt: domain.updatedAt?.toISOString(),

@@ -33,10 +33,10 @@ export class PostgresAccumulatedFuelConsumptionMapper {
 
       printedName: props.printed_name,
 
-      totalCar: props.total_car,
-      totalKmTravelled: props.total_km_travelled,
-      totalFuelFilled: props.total_fuel_filled,
-      average: props.average,
+      totalCar: Number(props.total_car),
+      totalKmTravelled: Number(props.total_km_travelled),
+      totalFuelFilled: Number(props.total_fuel_filled),
+      average: Number(props.average),
 
       createdAt: props.created_at,
       updatedAt: props.updated_at,

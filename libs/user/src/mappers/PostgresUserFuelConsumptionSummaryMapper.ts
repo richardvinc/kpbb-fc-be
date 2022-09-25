@@ -34,9 +34,9 @@ export class PostgresUserFuelConsumptionSummaryMapper {
       carModelId: new UniqueEntityId(props.car_model_id),
       carSubModelId: new UniqueEntityId(props.car_sub_model_id),
 
-      totalKmTravelled: props.total_km_travelled,
-      totalFuelFilled: props.total_fuel_filled,
-      average: props.average,
+      totalKmTravelled: Number(props.total_km_travelled),
+      totalFuelFilled: Number(props.total_fuel_filled),
+      average: Number(props.average),
 
       createdAt: props.created_at,
       updatedAt: props.updated_at,

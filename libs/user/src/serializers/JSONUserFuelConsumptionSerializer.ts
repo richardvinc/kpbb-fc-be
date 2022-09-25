@@ -6,7 +6,7 @@ import { JSONUserCarProps, JSONUserCarSerializer } from "./";
 
 export interface JSONUserFuelConsumptionProps {
   id: string;
-  userId: string;
+  // userId: string;
   km_traveled: number;
   fuel_filled: number;
   average: number;
@@ -30,7 +30,7 @@ export class JSONUserFuelConsumptionSerializer {
   ): JSONUserFuelConsumptionProps {
     return {
       id: domain.id.toString(),
-      userId: domain.userId.toString(),
+      // userId: domain.userId.toString(),
       km_traveled: domain.fuelConsumption.kmTravelled,
       fuel_filled: domain.fuelConsumption.fuelFilled,
       average: domain.fuelConsumption.average,

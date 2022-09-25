@@ -15,7 +15,7 @@ export interface JSONAccumulatedFuelConsumptionProps {
 }
 
 export interface JSONAccumulatedFuelConsumptionListProps {
-  data: JSONAccumulatedFuelConsumptionProps[];
+  cars: JSONAccumulatedFuelConsumptionProps[];
   totalEntries: number;
 }
 
@@ -47,7 +47,7 @@ export class JSONAccumulatedFuelConsumptionSerializer {
     totalEntries: number
   ): JSONAccumulatedFuelConsumptionListProps {
     return {
-      data: domain.map((item) =>
+      cars: domain.map((item) =>
         JSONAccumulatedFuelConsumptionSerializer.serialize(item)
       ),
       totalEntries,

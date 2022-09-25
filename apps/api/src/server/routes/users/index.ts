@@ -9,21 +9,20 @@ import { VerifyUser } from "../../middlewares/VerifyUser";
 import { CreateUserCarController } from "./CreateUserCarController";
 import { CreateUserController } from "./CreateUserController";
 import { CreateUserFuelConsumptionController } from "./CreateUserFuelConsumptionController";
+import { RetrieveSelfController } from "./RetrieveSelfController";
 import { RetrieveUserCarListController } from "./RetrieveUserCarListController";
-import { RetrieveUserController } from "./RetrieveUserController";
 import { RetrieveUserFuelConsumptionListByCarController } from "./RetrieveUserFuelConsumptionListByCarController";
 import { RetrieveUserFuelConsumptionSummaryListController } from "./RetrieveUserFuelConsumptionSummaryListController";
-import { RetrieveUserListController } from "./RetrieveUserListController";
 
 export function registerUsersRoutes(
   router: Router<DefaultState, AppContext>
 ): void {
   // users
-  router.get(
-    "/users",
-    VerifyAuthToken(),
-    asMiddleware(new RetrieveUserListController())
-  );
+  // router.get(
+  //   "/users",
+  //   VerifyAuthToken(),
+  //   asMiddleware(new RetrieveUserListController())
+  // );
   router.post(
     "/users",
     VerifyAuthToken(),
@@ -34,8 +33,10 @@ export function registerUsersRoutes(
     switch (ctx.params.path) {
       case "cars":
         return asMiddleware(new RetrieveUserCarListController())(ctx, next);
-      default:
-        return asMiddleware(new RetrieveUserController())(ctx, next);
+      case "me":
+        return asMiddleware(new RetrieveSelfController())(ctx, next);
+      // default:
+      //   return asMiddleware(new RetrieveUserController())(ctx, next);
     }
   });
 

@@ -56,6 +56,9 @@ export class KnexUserFuelConsumptionRepository
         if (options?.selection?.id) {
           qb.orWhere({ id: options.selection.id.toString() });
         }
+        if (options?.selection?.userId) {
+          qb.orWhere({ user_id: options.selection.userId.toString() });
+        }
       })
       .first();
 
@@ -69,7 +72,9 @@ export class KnexUserFuelConsumptionRepository
     return ufc;
   }
 
-  async getLastEntry(): Promise<UserFuelConsumption | undefined> {
+  async getLastEntry(
+    options?: GetUserFuelConsumptionSelection
+  ): Promise<UserFuelConsumption | undefined> {
     const logger = this.logger.child({
       method: "getLastEntries",
       traceId: getCurrentHub().getTraceId(),
@@ -81,6 +86,15 @@ export class KnexUserFuelConsumptionRepository
 
     const query = this.client(this.TABLE_NAME)
       .select()
+      .modify((qb) => {
+        // filters
+        if (options?.selection?.id) {
+          qb.orWhere({ id: options.selection.id.toString() });
+        }
+        if (options?.selection?.userId) {
+          qb.orWhere({ user_id: options.selection.userId.toString() });
+        }
+      })
       .orderBy("filled_at", "desc")
       .first();
 

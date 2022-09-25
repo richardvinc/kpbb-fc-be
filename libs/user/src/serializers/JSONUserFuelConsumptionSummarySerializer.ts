@@ -2,15 +2,10 @@
 import { Serializer, StaticImplements } from "@KPBBFC/core";
 
 import { UserFuelConsumptionSummary } from "../domains";
-import {
-  JSONUserCarProps,
-  JSONUserCarSerializer,
-  JSONUserProps,
-  JSONUserSerializer,
-} from "./";
+import { JSONUserCarProps, JSONUserCarSerializer } from "./";
 
 export interface JSONUserFuelConsumptionSummaryProps {
-  user?: JSONUserProps;
+  // user?: JSONUserProps;
   car?: JSONUserCarProps;
 
   totalKmTravelled: number;
@@ -31,7 +26,7 @@ export class JSONUserFuelConsumptionSummarySerializer {
   ): JSONUserFuelConsumptionSummaryProps {
     console.log(domain.car);
     return {
-      user: domain.user ? JSONUserSerializer.serialize(domain.user) : undefined,
+      // user: domain.user ? JSONUserSerializer.serialize(domain.user) : undefined,
       car: domain.car ? JSONUserCarSerializer.serialize(domain.car) : undefined,
 
       totalKmTravelled: domain.totalKmTravelled,

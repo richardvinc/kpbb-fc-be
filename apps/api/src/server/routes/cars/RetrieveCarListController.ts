@@ -9,6 +9,7 @@ import { AppContext } from "../..";
 
 interface RetrieveCarListQuery {
   search?: string;
+  transmission?: string;
   carBrandIds?: string;
   carModelIds?: string;
   limit?: number;
@@ -34,9 +35,10 @@ export class RetrieveCarListController extends KoaBaseController<AppContext> {
       dto: {
         filter: {
           search: query.search,
+          transmission: query.transmission,
           carBrandIds: query.carBrandIds?.split(","),
           carModelIds: query.carModelIds?.split(","),
-          limit: query.limit ?? 20,
+          limit: query.limit ?? 30,
           page: query.page ?? 1,
         },
       },

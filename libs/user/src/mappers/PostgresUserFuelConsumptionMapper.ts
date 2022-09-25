@@ -29,9 +29,9 @@ export class PostgresUserFuelConsumptionMapper {
         userId: new UniqueEntityId(props.user_id),
         userCarId: new UniqueEntityId(props.user_car_id),
         fuelConsumption: FuelConsumption.create({
-          kmTravelled: props.km_traveled,
-          fuelFilled: props.fuel_filled,
-          average: props.average,
+          kmTravelled: Number(props.km_traveled),
+          fuelFilled: Number(props.fuel_filled),
+          average: Number(props.average),
           filledAt: props.filled_at,
         }),
         createdAt: props.created_at,

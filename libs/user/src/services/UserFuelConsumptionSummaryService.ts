@@ -185,23 +185,35 @@ export class UserFuelConsumptionSummaryService
             userCarIds: [userCarId],
           },
         });
-      const lastEntry = await this.userFuelConsumptionRepository.getLastEntry();
+
+      logger.debug({ carFuelConsumption });
+      const lastEntry = await this.userFuelConsumptionRepository.getLastEntry({
+        selection: {
+          id: userCarId,
+        },
+      });
 
       const totalKmTravelled = lastEntry?.fuelConsumption.kmTravelled ?? 0;
-      const totalFuelFilled = carFuelConsumption.reduce(
-        (acc, cur) => acc + cur.fuelConsumption.fuelFilled,
-        0
-      );
+      const totalFuelFilled =
+        carFuelConsumption.length > 0
+          ? carFuelConsumption.reduce(
+              (acc, cur) => acc + cur.fuelConsumption.fuelFilled,
+              0
+            )
+          : 0;
       const totalAverage =
-        carFuelConsumption.reduce(
-          (acc, cur) => acc + cur.fuelConsumption.average,
-          0
-        ) / carFuelConsumption.length;
+        carFuelConsumption.length > 0
+          ? carFuelConsumption.reduce(
+              (acc, cur) => acc + cur.fuelConsumption.average,
+              0
+            ) / carFuelConsumption.length
+          : 0;
+      logger.debug({ totalAverage });
 
       const userFuelConsumptionSummary = UserFuelConsumptionSummary.create({
         totalKmTravelled,
         totalFuelFilled,
-        average: totalAverage,
+        average: totalAverage ?? 0,
         userId: userCar.userId,
         userCarId: userCar.id,
         carBrandId: userCar.carBrandId,

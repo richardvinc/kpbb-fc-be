@@ -6,15 +6,10 @@ import {
 } from "@KPBBFC/fuelConsumption";
 
 import { UserFuelConsumptionHistory } from "../domains";
-import {
-  JSONUserCarProps,
-  JSONUserCarSerializer,
-  JSONUserProps,
-  JSONUserSerializer,
-} from "./";
+import { JSONUserCarProps, JSONUserCarSerializer } from "./";
 
 export interface JSONUserFuelConsumptionHistoryProps {
-  user: JSONUserProps;
+  // user: JSONUserProps;
   car: JSONUserCarProps;
   fuelConsumptions: JSONFuelConsumptionProps[];
   totalEntries?: number;
@@ -33,7 +28,7 @@ export class JSONUserFuelConsumptionHistorySerializer {
     totalEntries?: number
   ): JSONUserFuelConsumptionHistoryProps {
     return {
-      user: JSONUserSerializer.serialize(domain.user),
+      // user: JSONUserSerializer.serialize(domain.user),
       car: JSONUserCarSerializer.serialize(domain.car),
       fuelConsumptions: domain.fuelConsumptions.map((fc) =>
         JSONFuelConsumptionSerializer.serialize(fc)

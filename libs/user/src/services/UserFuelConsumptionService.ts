@@ -69,17 +69,20 @@ export class UserFuelConsumptionService
     }
   }
 
-  async getLastEntry(): Promise<UserFuelConsumption | undefined> {
+  async getLastEntry(
+    options?: GetUserFuelConsumptionSelection
+  ): Promise<UserFuelConsumption | undefined> {
     const logger = this.logger.child({
       methodName: "getLastEntries",
       traceId: getCurrentHub().getTraceId(),
     });
 
     logger.trace("BEGIN");
+    logger.trace({ args: options });
 
     try {
       const userFuelConsumption =
-        await this.userFuelConsumptionRepository.getLastEntry();
+        await this.userFuelConsumptionRepository.getLastEntry(options);
       if (userFuelConsumption) {
         // populate cars
         const userCar = await this.userCarRepository.get({

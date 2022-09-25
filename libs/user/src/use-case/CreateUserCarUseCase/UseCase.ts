@@ -12,7 +12,10 @@ import {
 import { UserCar } from "../../domains";
 import { UserCarErrors, UserErrors } from "../../errors";
 import { JSONUserCarSerializer } from "../../serializers";
-import { IUserCarService } from "../../services";
+import {
+  IUserCarService,
+  IUserFuelConsumptionSummaryService,
+} from "../../services";
 import {
   CreateUserCarCommand,
   CreateUserCarCommandSchema,
@@ -23,6 +26,7 @@ import {
 interface Cradle {
   userCarService: IUserCarService;
   carService: ICarService;
+  userFuelConsumptionSummaryService: IUserFuelConsumptionSummaryService;
 }
 
 export type CreateUserCarResponse = BaseResponse<
@@ -41,12 +45,15 @@ export class CreateUserCarUseCase extends UseCase<
 
   private userCarService: IUserCarService;
   private carService: ICarService;
+  private userFuelConsumptionSummaryService: IUserFuelConsumptionSummaryService;
 
   constructor(cradle: Cradle) {
     super("CreateUserCarUseCase");
 
     this.userCarService = cradle.userCarService;
     this.carService = cradle.carService;
+    this.userFuelConsumptionSummaryService =
+      cradle.userFuelConsumptionSummaryService;
   }
 
   async handler(req: CreateUserCarCommand): Promise<CreateUserCarResponse> {
@@ -92,6 +99,9 @@ export class CreateUserCarUseCase extends UseCase<
       userCar.setCar(carSubModel);
 
       await this.userCarService.createUserCar(userCar);
+      await this.userFuelConsumptionSummaryService.calculateProperties(
+        userCar.id
+      );
 
       logger.trace(`END`);
       return right(JSONUserCarSerializer.serialize(userCar));

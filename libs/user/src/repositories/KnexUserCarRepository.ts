@@ -46,10 +46,10 @@ export class KnexUserCarRepository
           qb.orWhere({ id: options.selection.id.toString() });
         }
         if (options?.selection?.userId) {
-          qb.orWhere({ user_id: options.selection.userId.toString() });
+          qb.andWhere({ user_id: options.selection.userId.toString() });
         }
         if (options?.selection?.plateNumber) {
-          qb.orWhere({ plate_number: options.selection.plateNumber.value });
+          qb.andWhere({ plate_number: options.selection.plateNumber.value });
         }
       })
       .first();

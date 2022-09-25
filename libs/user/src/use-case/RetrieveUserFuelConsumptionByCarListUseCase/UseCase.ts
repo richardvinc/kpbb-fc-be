@@ -80,6 +80,7 @@ export class RetrieveUserFuelConsumptionListByCarUseCase extends UseCase<
       const userCar = await this.userCarService.get({
         selection: {
           id: new UniqueEntityId(dto.carId),
+          userId: new UniqueEntityId(identity.id),
         },
       });
       if (!userCar) return left(new UserCarErrors.UserCarNotFoundError());

@@ -80,16 +80,19 @@ export class CreateUserFuelConsumptionUseCase extends UseCase<
     const userId = new UniqueEntityId(identity.id);
     const userCarId = new UniqueEntityId(dto.fuelConsumption.carId);
 
-    const userCar = await this.userCarService.get({
+    const filter = {
       selection: {
         id: userCarId,
+        userId,
       },
-    });
+    };
+
+    const userCar = await this.userCarService.get(filter);
     if (!userCar) return left(new UserCarErrors.UserCarNotFoundError());
 
     try {
       const lastUserFuelConsumption =
-        await this.userFuelConsumptionService.getLastEntry();
+        await this.userFuelConsumptionService.getLastEntry(filter);
 
       if (lastUserFuelConsumption) {
         if (
