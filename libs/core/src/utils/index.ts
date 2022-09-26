@@ -1,4 +1,3 @@
-export * from "./Base64Util";
 export * from "./CryptoUtil";
 export * from "./DateUtil";
 export * from "./FileUtil";
