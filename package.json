@@ -34,7 +34,6 @@
     "deep-object-diff": "1.1.7",
     "dotenv": "10.0.0",
     "firebase-admin": "9.11.0",
-    "gulp": "^4.0.2",
     "joi": "17.4.2",
     "knex": "0.21.21",
     "koa": "2.13.1",
