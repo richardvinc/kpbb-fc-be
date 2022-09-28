@@ -3,6 +3,7 @@ import koa, { DefaultContext } from "koa";
 import body from "koa-body";
 import helmet from "koa-helmet";
 import qs from "koa-qs";
+import ratelimit from "koa-ratelimit";
 
 import cors from "@koa/cors";
 import { getCurrentHub } from "@KPBBFC/core/hub";
@@ -41,7 +42,7 @@ export class Server {
   private logger: ILogger;
 
   private defaultOptions: ServerOptions = {
-    port: 3000,
+    port: process.env.PORT ? +process.env.PORT : 3000,
   };
 
   constructor(options?: ServerOptions) {
@@ -58,6 +59,7 @@ export class Server {
   private attachMiddlewares(): void {
     const logger = this.logger.child({ method: "attachMiddlewares" });
     logger.trace(`BEGIN`);
+    const db = new Map();
 
     this.app
       .use(ScopePerRequest())
@@ -70,6 +72,22 @@ export class Server {
         RequestLog({
           logger: this.logger,
           excludePath: ["/health"],
+        })
+      )
+      .use(
+        ratelimit({
+          driver: "memory",
+          db: db,
+          duration: 60000,
+          errorMessage: "Sometimes You Just Have to Slow Down.",
+          id: (ctx) => ctx.ip,
+          headers: {
+            remaining: "Rate-Limit-Remaining",
+            reset: "Rate-Limit-Reset",
+            total: "Rate-Limit-Total",
+          },
+          max: 100,
+          disableHeader: false,
         })
       )
       .use(HealthCheck())
