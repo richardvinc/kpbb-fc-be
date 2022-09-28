@@ -1,5 +1,6 @@
 export type HttpSuccessResponse<T> = {
   $metadata: HttpResponseMetadata;
+  version?: string;
   ok: true;
 } & T;
 
