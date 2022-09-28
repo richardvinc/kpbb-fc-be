@@ -16,7 +16,7 @@ export function HealthCheck(options?: HealthCheckOptions): Middleware {
       $metadata: {
         request_id: getCurrentHub().getTraceId(),
       },
-      version: "1.0.0",
+      version: "1.1.2",
       ok: true,
     };
   };

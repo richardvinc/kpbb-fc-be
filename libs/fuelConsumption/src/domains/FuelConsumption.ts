@@ -42,7 +42,7 @@ export class FuelConsumption extends ValueObject<FuelConsumptionProps> {
   ): number {
     if (!kmTravelledPrevious) return 0;
 
-    return fuelFilled / (kmTravelled - kmTravelledPrevious);
+    return (kmTravelled - kmTravelledPrevious) / fuelFilled;
   }
 
   private constructor(props: FuelConsumptionProps) {
