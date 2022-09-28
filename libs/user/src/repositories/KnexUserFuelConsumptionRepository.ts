@@ -89,7 +89,7 @@ export class KnexUserFuelConsumptionRepository
       .modify((qb) => {
         // filters
         if (options?.selection?.id) {
-          qb.andWhere({ id: options.selection.id.toString() });
+          qb.andWhere({ user_car_id: options.selection.id.toString() });
         }
         if (options?.selection?.userId) {
           qb.andWhere({ user_id: options.selection.userId.toString() });
