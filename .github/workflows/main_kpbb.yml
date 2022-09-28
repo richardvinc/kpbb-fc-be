@@ -32,4 +32,4 @@ jobs:
           app-name: "kpbb"
           slot-name: "Production"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_D0271856CDFA4A76A0FA5882892421FA }}
-          package: ./dist
+          package: .
