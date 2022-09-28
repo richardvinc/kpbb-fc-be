@@ -128,6 +128,10 @@ export abstract class KoaBaseController<TContext extends DefaultContext> {
     this.setErrorResponse(400, err);
   }
 
+  public noAuth(err: BaseError): void {
+    this.setErrorResponse(401, err);
+  }
+
   public fail(err: BaseError): never {
     throw err;
   }

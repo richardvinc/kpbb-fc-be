@@ -41,7 +41,7 @@ export class Server {
   private logger: ILogger;
 
   private defaultOptions: ServerOptions = {
-    port: 8080,
+    port: 3000,
   };
 
   constructor(options?: ServerOptions) {

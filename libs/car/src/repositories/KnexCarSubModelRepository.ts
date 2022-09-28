@@ -133,6 +133,8 @@ export class KnexCarSubModelRepository
             orderFields[options.orderBy[0]],
             options.orderBy[1] === OrderDirection.ASC ? "asc" : "desc"
           );
+        } else {
+          qb.orderBy("printed_name", "asc");
         }
 
         // pagination

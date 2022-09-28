@@ -232,6 +232,8 @@ function useFirebaseAuth() {
     const creds = process.env.FIREBASE_CREDENTIALS;
     const path = process.env.FIREBASE_SERVICE_ACCOUNT_PATH;
 
+    console.log(creds);
+
     if (apps.length === 0) {
       return initializeApp({
         credential: credential.cert(creds ? JSON.parse(creds) : path),

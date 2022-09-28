@@ -37,6 +37,8 @@ class VerifyAuthTokenController extends KoaBaseController<AppContext> {
       const error = result.error;
       switch (error.constructor) {
         case AuthErrors.InvalidToken:
+          this.noAuth(error);
+          break;
         case RequestError.InvalidArgumentError:
           this.badRequest(error);
           break;

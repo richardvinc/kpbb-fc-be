@@ -24,10 +24,11 @@ export const RetrieveCarListCommandSchema = object<RetrieveCarListCommand>({
   dto: object<RetrieveCarListDTO>({
     version: number().optional(),
     filter: object({
-      search: string().min(2).optional(),
+      search: string().min(2).optional().allow(""),
       transmission: string()
         .valid(...Object.values(TransmissionTypeEnum))
-        .optional(),
+        .optional()
+        .allow(""),
       carBrandIds: array().items(string().uuid()).optional(),
       carModelIds: array().items(string().uuid()).optional(),
       limit: number().optional(),
