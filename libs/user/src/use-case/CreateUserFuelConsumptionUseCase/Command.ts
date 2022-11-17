@@ -17,6 +17,7 @@ export type CreateUserFuelConsumptionDTO = {
     carId: string;
     kmTravelled: number;
     fuelFilled: number;
+    average?: number;
     filledAt: Date;
   };
 };
@@ -29,6 +30,7 @@ export const CreateUserFuelConsumptionCommandSchema =
         carId: string().required(),
         kmTravelled: number().required(),
         fuelFilled: number().required(),
+        average: number().optional().allow(0),
         filledAt: date().required(),
       }),
     }).required(),

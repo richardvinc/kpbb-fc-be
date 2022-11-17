@@ -42,7 +42,10 @@ export class FuelConsumption extends ValueObject<FuelConsumptionProps> {
   ): number {
     if (!kmTravelledPrevious) return 0;
 
-    return (kmTravelled - kmTravelledPrevious) / fuelFilled;
+    const min = Math.min(kmTravelled, kmTravelledPrevious);
+    const max = Math.max(kmTravelled, kmTravelledPrevious);
+
+    return (max - min) / fuelFilled;
   }
 
   private constructor(props: FuelConsumptionProps) {

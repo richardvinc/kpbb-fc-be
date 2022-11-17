@@ -29,6 +29,7 @@ export interface GetAllAccumulatedFuelConsumptionSelection
   orderBy?: [AccumulatedFuelConsumptionOrderFields, OrderDirection];
   limit?: number;
   page?: number;
+  top10?: boolean;
 }
 
 export interface IAccumulatedFuelConsumptionRepository {

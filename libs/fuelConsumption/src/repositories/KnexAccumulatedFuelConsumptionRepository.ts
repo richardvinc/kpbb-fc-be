@@ -98,6 +98,7 @@ export class KnexAccumulatedFuelConsumptionRepository
     const query = this.client("user_fuel_consumption_summary")
       .avg("average as avg")
       .where("car_sub_model_id", carSubModelId.toString())
+      .where("average", ">", 0)
       .first();
 
     logger.info({ query: query.toQuery() });
@@ -210,6 +211,10 @@ export class KnexAccumulatedFuelConsumptionRepository
           qb.whereRaw(`lower(printed_name) LIKE ?`, [
             `%${options.selection.search.toLowerCase()}%`,
           ]);
+        }
+
+        if (options?.top10) {
+          qb.where("average", ">", 0);
         }
 
         if (options?.limit) {

@@ -94,16 +94,16 @@ export class CreateUserFuelConsumptionUseCase extends UseCase<
       const lastUserFuelConsumption =
         await this.userFuelConsumptionService.getLastEntry(filter);
 
-      if (lastUserFuelConsumption) {
-        if (
-          dto.fuelConsumption.kmTravelled <=
-          lastUserFuelConsumption.fuelConsumption.kmTravelled
-        ) {
-          return left(
-            new FuelConsumptionErrors.FuelConsumptionKmTravelledEqualOrLessThanPrevious()
-          );
-        }
-      }
+      // if (lastUserFuelConsumption) {
+      //   if (
+      //     dto.fuelConsumption.kmTravelled <=
+      //     lastUserFuelConsumption.fuelConsumption.kmTravelled
+      //   ) {
+      //     return left(
+      //       new FuelConsumptionErrors.FuelConsumptionKmTravelledEqualOrLessThanPrevious()
+      //     );
+      //   }
+      // }
 
       const userFuelConsumption = UserFuelConsumption.create({
         userId,
@@ -111,11 +111,14 @@ export class CreateUserFuelConsumptionUseCase extends UseCase<
         fuelConsumption: FuelConsumption.create({
           kmTravelled: dto.fuelConsumption.kmTravelled,
           fuelFilled: dto.fuelConsumption.fuelFilled,
-          average: FuelConsumption.calculateAverage(
-            dto.fuelConsumption.fuelFilled,
-            dto.fuelConsumption.kmTravelled,
-            lastUserFuelConsumption?.fuelConsumption.kmTravelled
-          ),
+          average:
+            dto.fuelConsumption.average && dto.fuelConsumption.average !== 0
+              ? dto.fuelConsumption.average
+              : FuelConsumption.calculateAverage(
+                  dto.fuelConsumption.fuelFilled,
+                  dto.fuelConsumption.kmTravelled,
+                  lastUserFuelConsumption?.fuelConsumption.kmTravelled
+                ),
           filledAt: dto.fuelConsumption.filledAt,
         }),
       });

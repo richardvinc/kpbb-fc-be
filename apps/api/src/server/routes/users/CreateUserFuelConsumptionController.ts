@@ -12,6 +12,7 @@ interface CreateUserFuelConsumptionBody {
     kmTravelled: number;
     fuelFilled: number;
     filledAt?: Date;
+    average?: number;
   };
 }
 
@@ -46,6 +47,7 @@ export class CreateUserFuelConsumptionController extends KoaBaseController<AppCo
           carId: params.userCarId,
           kmTravelled: body.fuelConsumption.kmTravelled,
           fuelFilled: body.fuelConsumption.fuelFilled,
+          average: body.fuelConsumption.average,
           filledAt: body.fuelConsumption.filledAt ?? new Date(),
         },
       },
