@@ -230,6 +230,7 @@ export class KnexAccumulatedFuelConsumptionRepository
         }
 
         qb.whereNull(`${this.TABLE_NAME}.deleted_at`);
+        qb.where(`${this.TABLE_NAME}.is_hidden`, "=", false);
       }
     );
 
@@ -283,6 +284,7 @@ export class KnexAccumulatedFuelConsumptionRepository
 
         // default to not return deleted entries
         qb.whereNull(`${this.TABLE_NAME}.deleted_at`);
+        qb.where(`${this.TABLE_NAME}.is_hidden`, "=", false);
       })
       .first();
 

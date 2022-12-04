@@ -13,6 +13,7 @@ export interface PostgresAccumulatedFuelConsumptionProps {
   total_km_travelled: number;
   total_fuel_filled: number;
   average: number;
+  is_hidden?: boolean;
 
   created_at: Date;
   updated_at: Date;
@@ -37,6 +38,7 @@ export class PostgresAccumulatedFuelConsumptionMapper {
       totalKmTravelled: Number(props.total_km_travelled),
       totalFuelFilled: Number(props.total_fuel_filled),
       average: Number(props.average),
+      isHidden: Boolean(props.is_hidden) ?? false,
 
       createdAt: props.created_at,
       updatedAt: props.updated_at,
@@ -56,6 +58,7 @@ export class PostgresAccumulatedFuelConsumptionMapper {
       total_km_travelled: domain.totalKmTravelled,
       total_fuel_filled: domain.totalFuelFilled,
       average: domain.average,
+      is_hidden: domain.isHidden ?? false,
 
       created_at: domain.createdAt ?? new Date(),
       updated_at: domain.updatedAt ?? new Date(),

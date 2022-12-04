@@ -206,7 +206,8 @@ export class UserFuelConsumptionSummaryService
           ? carFuelConsumption.reduce(
               (acc, cur) => acc + cur.fuelConsumption.average,
               0
-            ) / carFuelConsumption.length
+            ) /
+            (carFuelConsumption.length - 1)
           : 0;
       logger.debug({ totalAverage });
 

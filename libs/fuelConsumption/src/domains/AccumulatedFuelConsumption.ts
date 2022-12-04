@@ -1,4 +1,4 @@
-import { date, number, object, string } from "joi";
+import { boolean, date, number, object, string } from "joi";
 
 import { CarSubModel } from "@KPBBFC/car";
 import { UniqueEntityId, ValueObject } from "@KPBBFC/core/domain";
@@ -15,6 +15,7 @@ export interface AccumulatedFuelConsumptionProps {
   totalKmTravelled: number;
   totalFuelFilled: number;
   average: number;
+  isHidden?: boolean;
 
   createdAt?: Date;
   updatedAt?: Date;
@@ -34,6 +35,7 @@ export class AccumulatedFuelConsumption extends ValueObject<AccumulatedFuelConsu
     totalKmTravelled: number().required(),
     totalFuelFilled: number().required(),
     average: number().required(),
+    isHidden: boolean().optional(),
 
     createdAt: date().optional(),
     updatedAt: date().optional(),
@@ -74,6 +76,10 @@ export class AccumulatedFuelConsumption extends ValueObject<AccumulatedFuelConsu
 
   get average(): number {
     return this.props.average;
+  }
+
+  get isHidden(): boolean | undefined {
+    return this.props.isHidden;
   }
 
   get createdAt(): Date | undefined {

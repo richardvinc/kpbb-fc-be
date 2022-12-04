@@ -96,6 +96,8 @@ export class KnexUserCarRepository
           );
         }
 
+        qb.orderBy("plate_number", "asc");
+
         qb.whereNull(`deleted_at`);
       });
 
