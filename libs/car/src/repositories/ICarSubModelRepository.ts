@@ -18,7 +18,7 @@ export interface GetAllCarSubModelSelection extends KnexBaseRepositoryOptions {
   limit?: number;
   page?: number;
   orderBy?: [CarSubModelOrderFields, OrderDirection];
-
+  isCar?: boolean;
   search?: string;
 
   selection?: {

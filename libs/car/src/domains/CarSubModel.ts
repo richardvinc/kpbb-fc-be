@@ -1,4 +1,4 @@
-import { date, object, string } from "joi";
+import { boolean, date, object, string } from "joi";
 
 import { AggregateRoot, UniqueEntityId } from "@KPBBFC/core/domain";
 import { InternalError } from "@KPBBFC/core/errors";
@@ -27,6 +27,8 @@ interface CarSubModelProps {
   tankCapacity?: TankCapacity;
   dimension?: CarDimension;
 
+  isCar: boolean;
+
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
@@ -47,6 +49,8 @@ export class CarSubModel extends AggregateRoot<CarSubModelProps> {
     transmissionType: object().required(),
     tankCapacity: object().optional(),
     dimension: object().optional(),
+
+    isCar: boolean().required(),
 
     createdAt: date().optional(),
     updatedAt: date().optional(),
@@ -83,6 +87,10 @@ export class CarSubModel extends AggregateRoot<CarSubModelProps> {
 
   get model(): CarModel | undefined {
     return this.props.model;
+  }
+
+  get isCar(): boolean {
+    return this.props.isCar;
   }
 
   get fuelType(): FuelType {

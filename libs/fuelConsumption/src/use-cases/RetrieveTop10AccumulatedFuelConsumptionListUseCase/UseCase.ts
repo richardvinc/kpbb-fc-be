@@ -57,7 +57,9 @@ export class RetrieveTop10AccumulatedFuelConsumptionListUseCase extends UseCase<
     const dto = req.dto;
 
     try {
-      const results = await this.accumulatedFuelConsumptionService.getTop10();
+      const results = await this.accumulatedFuelConsumptionService.getTop10(
+        dto.isCar
+      );
 
       const response = results.map((r) =>
         JSONAccumulatedFuelConsumptionSerializer.serialize(r)

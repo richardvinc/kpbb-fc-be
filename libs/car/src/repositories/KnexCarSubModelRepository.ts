@@ -81,6 +81,9 @@ export class KnexCarSubModelRepository
     const query = this.client(this.TABLE_NAME)
       .select()
       .modify((qb) => {
+        if (options?.isCar !== undefined) {
+          qb.where({ is_car: options.isCar });
+        }
         // filters
         if (options?.selection?.ids) {
           qb.whereIn(

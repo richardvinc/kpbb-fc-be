@@ -17,7 +17,7 @@ export interface IAccumulatedFuelConsumptionService {
     options?: GetAllAccumulatedFuelConsumptionSelection
   ): Promise<number>;
 
-  getTop10(): Promise<AccumulatedFuelConsumption[]>;
+  getTop10(isCar?: boolean): Promise<AccumulatedFuelConsumption[]>;
 
   calculateProperties(carSubModelId?: UniqueEntityId): Promise<void>;
 

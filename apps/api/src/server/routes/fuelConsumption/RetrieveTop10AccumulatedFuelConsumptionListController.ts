@@ -7,8 +7,10 @@ import { ICommand } from "@KPBBFC/types";
 import { AppContext } from "../..";
 
 export class RetrieveTop10AccumulatedFuelConsumptionListController extends KoaBaseController<AppContext> {
-  constructor() {
+  _isCar = true;
+  constructor(isCar = true) {
     super("RetrieveTop10AccumulatedFuelConsumptionListController");
+    this._isCar = isCar;
   }
 
   async executeImpl(): Promise<void> {
@@ -22,7 +24,9 @@ export class RetrieveTop10AccumulatedFuelConsumptionListController extends KoaBa
     const cmd: ICommand<
       Partial<RetrieveTop10AccumulatedFuelConsumptionListDTO>
     > = {
-      dto: {},
+      dto: {
+        isCar: this._isCar ?? true,
+      },
     };
 
     const result =

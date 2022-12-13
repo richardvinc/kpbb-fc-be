@@ -32,6 +32,8 @@ export interface PostgresCarSubModelProps {
   dimension_w: number;
   dimension_h: number;
 
+  is_car: boolean;
+
   created_at?: Date;
   updated_at?: Date;
   deleted_at?: Date;
@@ -62,6 +64,8 @@ export class PostgresCarSubModelMapper {
           length: Dimension.create(props.dimension_l),
         }),
 
+        isCar: props.is_car,
+
         createdAt: props.created_at,
         updatedAt: props.updated_at,
         deletedAt: props.deleted_at,
@@ -85,6 +89,8 @@ export class PostgresCarSubModelMapper {
       dimension_l: domain.dimension ? domain.dimension.length.value : 0,
       dimension_w: domain.dimension ? domain.dimension.width.value : 0,
       dimension_h: domain.dimension ? domain.dimension.height.value : 0,
+
+      is_car: domain.isCar,
 
       created_at: domain.createdAt ?? new Date(),
       updated_at: domain.updatedAt ?? new Date(),

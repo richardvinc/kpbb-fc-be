@@ -16,8 +16,16 @@ export function registerFuelConsumptionRoutes(
     asMiddleware(new RetrieveAccumulatedFuelConsumptionListController())
   );
   router.get(
-    "/fuel-consumptions/top-10",
-    asMiddleware(new RetrieveTop10AccumulatedFuelConsumptionListController())
+    "/fuel-consumptions/top-10/car",
+    asMiddleware(
+      new RetrieveTop10AccumulatedFuelConsumptionListController(true)
+    )
+  );
+  router.get(
+    "/fuel-consumptions/top-10/motor",
+    asMiddleware(
+      new RetrieveTop10AccumulatedFuelConsumptionListController(false)
+    )
   );
   router.get(
     "/fuel-consumptions/cars/:id",

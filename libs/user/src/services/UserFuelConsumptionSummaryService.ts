@@ -202,12 +202,13 @@ export class UserFuelConsumptionSummaryService
             )
           : 0;
       const totalAverage =
-        carFuelConsumption.length > 0
+        carFuelConsumption.length > 1
           ? carFuelConsumption.reduce(
               (acc, cur) => acc + cur.fuelConsumption.average,
               0
             ) /
-            (carFuelConsumption.length - 1)
+              carFuelConsumption.length -
+            1
           : 0;
       logger.debug({ totalAverage });
 

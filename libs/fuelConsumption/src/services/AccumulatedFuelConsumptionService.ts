@@ -180,7 +180,7 @@ export class AccumulatedFuelConsumptionService
     }
   }
 
-  async getTop10(): Promise<AccumulatedFuelConsumption[]> {
+  async getTop10(isCar?: boolean): Promise<AccumulatedFuelConsumption[]> {
     const logger = this.logger.child({
       methodName: "getTop10",
       traceId: getCurrentHub().getTraceId(),
@@ -202,6 +202,7 @@ export class AccumulatedFuelConsumptionService
         selection: {
           ids: AccumulatedFuelConsumptions.map((x) => x.carSubModelId),
         },
+        isCar,
       });
       for (const AccumulatedFuelConsumption of AccumulatedFuelConsumptions) {
         const car = cars.find((c) =>
@@ -212,7 +213,7 @@ export class AccumulatedFuelConsumptionService
         }
       }
 
-      return AccumulatedFuelConsumptions;
+      return AccumulatedFuelConsumptions.filter((x) => x.car);
     } catch (error) {
       logger.fatal(error as Error);
       throw error;
