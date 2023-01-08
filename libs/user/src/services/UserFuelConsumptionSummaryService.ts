@@ -209,6 +209,8 @@ export class UserFuelConsumptionSummaryService
             ) /
               carFuelConsumption.length -
             1
+          : carFuelConsumption.length === 1
+          ? carFuelConsumption[0].fuelConsumption.average
           : 0;
       logger.debug({ totalAverage });
 

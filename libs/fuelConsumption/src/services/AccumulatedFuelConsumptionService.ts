@@ -195,6 +195,7 @@ export class AccumulatedFuelConsumptionService
           AccumulatedFuelConsumptionOrderFields.AVERAGE,
           OrderDirection.DESC,
         ],
+        top10: true,
       });
 
       // populate cars
